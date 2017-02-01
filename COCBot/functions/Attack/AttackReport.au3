@@ -178,7 +178,7 @@ Func AttackReport()
 	Local $AtkLogTxt
 
 	If $ichkSwitchAccount = 1 Then
-		$AtkLogTxt = "#" & String($CurrentAccount) & "|" & _NowTime(4) & "|"
+		$AtkLogTxt = String($CurrentAccount) & " |" & _NowTime(4) & "|"
 		$AtkLogTxt &= StringFormat("%5d", $g_iTrophyCurrent[$CurrentAccount]) & "|"
 		$AtkLogTxt &= StringFormat("%4d", $SearchCount) & "|"
 		$AtkLogTxt &= StringFormat("%7d", $g_iGoldLast[$CurrentAccount]) & "|"
@@ -258,12 +258,6 @@ Func AttackReport()
 		EndIf
 	EndIf
 	$g_iAttackedVillageCount[$CurrentAccount][$iMatchMode] += 1
-
-	If $ichkSwitchAccount = 1 Then
-		$g_iGoldGainSW[$CurrentAccount] += $g_iGoldLast[$CurrentAccount] + $g_iGoldLastBonus[$CurrentAccount]
-		$g_iElixirGainSW[$CurrentAccount] += $g_iElixirLast[$CurrentAccount] + $g_iElixirLastBonus[$CurrentAccount]
-		$g_iDarkGainSW[$CurrentAccount] += $g_iDarkLast[$CurrentAccount] + $g_iDarkLastBonus[$CurrentAccount]
-	EndIf
 
 	UpdateStats()
 	$troops_maked_after_fullarmy = False ; reset variable due to used troops for attack

@@ -61,13 +61,6 @@ Func EndGainCost($Type)
 				$g_iDarkTotal[$CurrentAccount] += $tempDElixirCollected
 			EndIf
 
-			If $ichkSwitchAccount = 1 Then
-				$g_iGoldGainSW[$CurrentAccount] += $tempGoldCollected
-				$g_iElixirGainSW[$CurrentAccount] += $tempElixirCollected
-				$g_iDarkGainSW[$CurrentAccount] += $tempDElixirCollected
-			EndIf
-
-
 		Case "Train"
 			Local $tempElixirSpent = 0
 			Local $tempDElixirSpent = 0
@@ -81,11 +74,6 @@ Func EndGainCost($Type)
 				$tempDElixirSpent = ($TempGainCost[2] - $g_iDarkCurrent[$CurrentAccount])
 				$g_iTrainCostDElixir[$CurrentAccount] += $tempDElixirSpent
 				$g_iDarkTotal[$CurrentAccount] -= $tempDElixirSpent
-			EndIf
-
-			If $ichkSwitchAccount = 1 Then
-				$g_iElixirGainSW[$CurrentAccount] -= $tempElixirSpent
-				$g_iDarkGainSW[$CurrentAccount] -= $tempDElixirSpent
 			EndIf
 
 	EndSwitch

@@ -13,100 +13,76 @@
 ; Example .......:
 ; ===============================================================================================================================
 
-Func UpdateStatsSwitchMode()
+Func UpdateStatsSwitchMode() ; UPDATES THE TAB MULTI STATS
+	Local Static $g_iOLDGoldNowSW[9], $g_iOLDElixirNowSW[9], $g_iOLDDarkNowSW[9], $g_iOLDGemNowSW[9]
+	Local Static $g_iOLDFreeBuilders[9], $g_sProfileName[9]
 
-If $g_sProfileName[$CurrentAccount] <> $sCurrProfile Then
-	$g_sProfileName[$CurrentAccount] = $sCurrProfile
-	GUICtrlSetData($g_grpVillageSW[$CurrentAccount], GetTranslated(603, 32, "Village") & ": " & $g_sProfileName[$CurrentAccount])
-EndIf
-
+	If $g_sProfileName[$CurrentAccount] <> $sCurrProfile Then
+		$g_sProfileName[$CurrentAccount] = $sCurrProfile
+		GUICtrlSetData($g_grpVillageSW[$CurrentAccount], GetTranslated(603, 32, "Village") & ": " & $g_sProfileName[$CurrentAccount])
+	EndIf
 
 
     For $i = 1 To 8 ; Update time for all Accounts
-#cs
-		If $aTimerStart[$i] <> 0 Then
-			$aTimerEnd[$i] = Round(TimerDiff($aTimerStart[$i]) / 1000 / 60, 2) 		; 	counting elapse of training time of an account from last army checking - in minutes
-			$aUpdateRemainTrainTime[$i] = Round($aRemainTrainTime[$i]-$aTimerEnd[$i], 1)			;   updated remain train time of Active accounts
-			If $aUpdateRemainTrainTime[$i] < 0 And $i <> ($nCurProfile - 1) Then
-				GUICtrlSetData($lblResultTimeNowAcc[$i], _NumberFormat( $aUpdateRemainTrainTime[$i], True))
-				GUICtrlSetFont($lblResultTimeNowAcc[$i], 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-				GUICtrlSetColor($lblResultTimeNowAcc[$i], $COLOR_RED)
-			EndIf
-			If $aUpdateRemainTrainTime[$i] >= 0 And $i <> ($nCurProfile - 1) Then
-				GUICtrlSetData($lblResultTimeNowAcc[$i], _NumberFormat( $aUpdateRemainTrainTime[$i], True))
-				GUICtrlSetFont($lblResultTimeNowAcc[$i], 9, $FW_BOLD, Default, "Arial", $CLEARTYPE_QUALITY)
-				GUICtrlSetColor($lblResultTimeNowAcc[$i], $COLOR_BLACK)
-			EndIf
-		EndIf
-#ce
-
-	; Update Per Hour stats every Time
-
 	;THESE ARE UPDATE STATS IN TAB, NOT BELOW STATS
-		GUICtrlSetData($g_lblHrStatsGoldSW[$CurrentAccount], _NumberFormat(Round($g_iGoldGainSW[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
-		GUICtrlSetData($g_lblHrStatsElixirSW[$CurrentAccount], _NumberFormat(Round($g_iElixirGainSW[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
-		GUICtrlSetData($g_lblHrStatsDarkSW[$CurrentAccount], _NumberFormat(Round($g_iDarkGainSW[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
+		GUICtrlSetData($g_lblHrStatsGoldSW[$CurrentAccount], _NumberFormat(Round($g_iGoldTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+		GUICtrlSetData($g_lblHrStatsElixirSW[$CurrentAccount], _NumberFormat(Round($g_iElixirTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+		GUICtrlSetData($g_lblHrStatsDarkSW[$CurrentAccount], _NumberFormat(Round($g_iDarkTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
+
+		GUICtrlSetData($g_lblHrStatsGoldPO[$CurrentAccount], _NumberFormat(Round($g_iGoldTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+		GUICtrlSetData($g_lblHrStatsElixirPO[$CurrentAccount], _NumberFormat(Round($g_iElixirTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+		GUICtrlSetData($g_lblHrStatsDarkPO[$CurrentAccount], _NumberFormat(Round($g_iDarkTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
 
 	Next
 
+; Update Stats TAB MULTI Just for Current Account, only the ones that have changed >> Faster
+		If $g_iGoldCurrent[$CurrentAccount] <> $g_iOLDGoldNowSW[$CurrentAccount] Or $g_iGoldCurrent[$CurrentAccount] = "" Then
+			GUICtrlSetData($g_lblGoldNowSW[$CurrentAccount], _NumberFormat($g_iGoldCurrent[$CurrentAccount]))
+			GUICtrlSetData($g_lblGoldNowPO[$CurrentAccount], _NumberFormat($g_iGoldCurrent[$CurrentAccount]))
 
-; Update Stats Just for Current Account, only the ones that have changed >> Faster
-
-		If $g_iGoldNowSW[$CurrentAccount] <> $g_iOLDGoldNowSW[$CurrentAccount] Or $g_iGoldNowSW[$CurrentAccount] = "" Then
-			GUICtrlSetData($g_lblGoldNowSW[$CurrentAccount], _NumberFormat($g_iGoldNowSW[$CurrentAccount]))
-			$g_iOLDGoldNowSW[$CurrentAccount] = $g_iGoldNowSW[$CurrentAccount]
+			$g_iOLDGoldNowSW[$CurrentAccount] = $g_iGoldCurrent[$CurrentAccount]
 		EndIf
 
-		If $g_iElixirNowSW[$CurrentAccount] <> $g_iOLDElixirNowSW[$CurrentAccount] Or $g_iElixirNowSW[$CurrentAccount] = "" Then
-			GUICtrlSetData($g_lblElixirNowSW[$CurrentAccount], _NumberFormat($g_iElixirNowSW[$CurrentAccount]))
-			$g_iOLDElixirNowSW[$CurrentAccount] = $g_iElixirNowSW[$CurrentAccount]
+		If $g_iElixirCurrent[$CurrentAccount] <> $g_iOLDElixirNowSW[$CurrentAccount] Or $g_iElixirCurrent[$CurrentAccount] = "" Then
+			GUICtrlSetData($g_lblElixirNowSW[$CurrentAccount], _NumberFormat($g_iElixirCurrent[$CurrentAccount]))
+			GUICtrlSetData($g_lblElixirNowPO[$CurrentAccount], _NumberFormat($g_iElixirCurrent[$CurrentAccount]))
+
+			$g_iOLDElixirNowSW[$CurrentAccount] = $g_iElixirCurrent[$CurrentAccount]
 		EndIf
 
-		If $g_iDarkNowSW[$CurrentAccount] <> $g_iOLDDarkNowSW[$CurrentAccount] Or $g_iDarkNowSW[$CurrentAccount] = "" Then
+		If $g_iDarkCurrent[$CurrentAccount] <> $g_iOLDDarkNowSW[$CurrentAccount] Or $g_iDarkCurrent[$CurrentAccount] = "" Then
 			If $g_iDarkStart[$CurrentAccount] <> "" Then
-				GUICtrlSetData($g_lblDarkNowSW[$CurrentAccount], _NumberFormat($g_iDarkNowSW[$CurrentAccount]))
-				$g_iOLDDarkNowSW[$CurrentAccount] = $g_iDarkNowSW[$CurrentAccount]
+				GUICtrlSetData($g_lblDarkNowSW[$CurrentAccount], _NumberFormat($g_iDarkCurrent[$CurrentAccount]))
+				GUICtrlSetData($g_lblDarkNowPO[$CurrentAccount], _NumberFormat($g_iDarkCurrent[$CurrentAccount]))
+
+				$g_iOLDDarkNowSW[$CurrentAccount] = $g_iDarkCurrent[$CurrentAccount]
 			EndIf
 		EndIf
 
-		If $g_iGemNow[$CurrentAccount] <> $g_iOLDGemNow[$CurrentAccount] Or $g_iGemNow[$CurrentAccount] = "" Then
-			GUICtrlSetData($g_lblGemNowSW[$CurrentAccount], $g_iGemNow[$CurrentAccount] )
-			$g_iOLDGemNow[$CurrentAccount] = $g_iGemNow[$CurrentAccount]
+		If $g_iGemAmount[$CurrentAccount] <> $g_iOLDGemNowSW[$CurrentAccount] Or $g_iGemAmount[$CurrentAccount] = "" Then
+			GUICtrlSetData($g_lblGemNowSW[$CurrentAccount], $g_iGemAmount[$CurrentAccount] )
+			GUICtrlSetData($g_lblGemNowPO[$CurrentAccount], $g_iGemAmount[$CurrentAccount] )
+
+			$g_iOLDGemNowSW[$CurrentAccount] = $g_iGemAmount[$CurrentAccount]
 		EndIf
 
-		If $g_iFreeBuilders[$CurrentAccount] <> $g_iOLDFreeBuilders[$CurrentAccount] Or $g_iFreeBuilders[$CurrentAccount] = "" Then
-			GUICtrlSetData($g_lblBuilderNowSW[$CurrentAccount], $g_iFreeBuilders[$CurrentAccount] & "/" & $g_iTotalBuilders[$CurrentAccount])
-			$g_iOLDFreeBuilders[$CurrentAccount] = $g_iFreeBuilders[$CurrentAccount]
+		If $g_iFreeBuilderCount[$CurrentAccount] <> $g_iOLDFreeBuilders[$CurrentAccount] Or $g_iFreeBuilderCount[$CurrentAccount] = "" Then
+			GUICtrlSetData($g_lblBuilderNowSW[$CurrentAccount], $g_iFreeBuilderCount[$CurrentAccount] & "/" & $g_iTotalBuilderCount[$CurrentAccount])
+			GUICtrlSetData($g_lblBuilderNowPO[$CurrentAccount], $g_iFreeBuilderCount[$CurrentAccount] & "/" & $g_iTotalBuilderCount[$CurrentAccount])
+
+			$g_iOLDFreeBuilders[$CurrentAccount] = $g_iFreeBuilderCount[$CurrentAccount]
 		EndIf
 
 
 
-	If $FirstAttack = 2 Then  ; ============= Update Gain Stats at Bottom GUI
-		GUICtrlSetData($lblResultGoldHourNow, _NumberFormat(Round($g_iGoldGainSW[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & " K/hr") ;GUI BOTTOM
-		GUICtrlSetData($lblResultElixirHourNow, _NumberFormat(Round($g_iElixirGainSW[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & " K/hr") ;GUI BOTTOM
-		If $g_iDarkStart[$CurrentAccount] <> "" Then
-			GUICtrlSetData($lblResultDEHourNow, _NumberFormat(Round($g_iDarkGainSW[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) & "  /hr") ;GUI BOTTOM
-		EndIf
-	EndIf		; ============= Update Gain Stats at Bottom GUI
+
+
+
 
 EndFunc   ;==>UpdateStatsForSwitchAcc
 
 Func ResetStatsSwitchMode()
-
-	For $i = 1 To 8 ; SwitchAcc Mod - Demen
-	   $g_iGoldNowSW[$i] = 0
-	   $g_iElixirNowSW[$i] = 0
-	   $g_iDarkNowSW[$i] = 0
-
-	   $g_iGoldGainSW[$i] = 0
-	   $g_iElixirGainSW[$i] = 0
-	   $g_iDarkGainSW[$i] = 0
-
-;	   $g_iAttackedVillageCount[$i] = 0
-	   $g_iSkippedVillageCountSW[$i] = 0
-
-	Next
-
+	Return
 EndFunc   ;==>ResetStatsForSwitchAcc
 
 

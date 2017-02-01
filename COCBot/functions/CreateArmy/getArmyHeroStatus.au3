@@ -22,16 +22,61 @@ Func ArmyHeroStatus($Hero)
 		Case $Hero = "King" Or $Hero = 0 Or $Hero = $eKing
 			$Result = SearchArmy($directory, $aHeroesRect[0][0], $aHeroesRect[0][1], $aHeroesRect[0][2], $aHeroesRect[0][3], "", True)
 			$Status = $Result[0][0]
+			If $ichkSwitchAccount = 1 Then
+				Switch $Status
+					Case "heal" ; Yellow
+						GUICtrlSetState($g_lblKingStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblKingStatus[$CurrentAccount], $COLOR_YELLOW)
+					Case "upgrade" ; Red
+						GUICtrlSetState($g_lblKingStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblKingStatus[$CurrentAccount], $COLOR_RED)
+					Case "none" ; Hide lbl
+						GUICtrlSetState($g_lblKingStatus[$CurrentAccount], $GUI_HIDE)
+					Case Else ; Green
+						GUICtrlSetState($g_lblKingStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblKingStatus[$CurrentAccount], $COLOR_GREEN)
+				EndSwitch
+			EndIf
 			If $Status = "" Then $Status = "king"
 			Return $Status
 		Case $Hero = "Queen" Or $Hero = 1 Or $Hero = $eQueen
 			$Result = SearchArmy($directory, $aHeroesRect[1][0], $aHeroesRect[1][1], $aHeroesRect[1][2], $aHeroesRect[1][3], "", True)
 			$Status = $Result[0][0]
+			If $ichkSwitchAccount = 1 Then
+				Switch $Status
+					Case "heal" ; Yellow
+						GUICtrlSetState($g_lblQueenStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblQueenStatus[$CurrentAccount], $COLOR_YELLOW)
+					Case "upgrade" ; Red
+						GUICtrlSetState($g_lblQueenStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblQueenStatus[$CurrentAccount], $COLOR_RED)
+					Case "none" ; Hide lbl
+						GUICtrlSetState($g_lblQueenStatus[$CurrentAccount], $GUI_HIDE)
+					Case Else ; Green
+						GUICtrlSetState($g_lblQueenStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblQueenStatus[$CurrentAccount], $COLOR_GREEN)
+				EndSwitch
+			EndIf		
 			If $Status = "" Then $Status = "queen"
 			Return $Status
 		Case $Hero = "Warden" Or $Hero = 2 Or $Hero = $eWarden
 			$Result = SearchArmy($directory, $aHeroesRect[2][0], $aHeroesRect[2][1], $aHeroesRect[2][2], $aHeroesRect[2][3], "", True)
 			$Status = $Result[0][0]
+			If $ichkSwitchAccount = 1 Then
+				Switch $Status
+					Case "heal" ; Yellow 
+						GUICtrlSetState($g_lblWardenStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblWardenStatus[$CurrentAccount], $COLOR_YELLOW)
+					Case "upgrade" ; Red
+						GUICtrlSetState($g_lblWardenStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblWardenStatus[$CurrentAccount], $COLOR_RED)
+					Case "none" ; Hide lbl
+						GUICtrlSetState($g_lblWardenStatus[$CurrentAccount], $GUI_HIDE)
+					Case Else ; Green
+						GUICtrlSetState($g_lblWardenStatus[$CurrentAccount], $GUI_SHOW)
+						GUICtrlSetBkColor($g_lblWardenStatus[$CurrentAccount], $COLOR_GREEN)
+				EndSwitch
+			EndIf
 			If $Status = "" Then $Status = "warden"
 			Return $Status
 	EndSelect

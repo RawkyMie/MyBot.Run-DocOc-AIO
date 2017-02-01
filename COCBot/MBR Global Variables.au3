@@ -666,7 +666,8 @@ Global $iTestFreeBuilderCount = -1 ; used for test cases, -1 = disabled
 Global $iNbrOfOoS ; number of Out of Sync occurred Leave a total value, not by each account
 Global $ArmyCapacity = 0 ; Array not needed for Switch Multi Account Stats
 Global $iLaboratoryElixirCost ; Array not needed for Switch Multi Account Stats
-
+Global $iOldNbrOfOoS = 0
+Global $ResetStats = 0
 Global $lblAttacked[$iModeCount + 3], $lblTotalGoldGain[$iModeCount + 3], $lblTotalElixirGain[$iModeCount + 3]
 Global $lblTotalDElixirGain[$iModeCount + 3], $lblTotalTrophyGain[$iModeCount + 3] ; GUi Labels Do Not Need to be Arrayed for Swtich Account
 Global $lblNbrOfDetectedMines[$iModeCount + 3], $lblNbrOfDetectedCollectors[$iModeCount + 3], $lblNbrOfDetectedDrills[$iModeCount + 3]
