@@ -72,9 +72,9 @@ Local $x = -5, $y = 7
 		$g_lblBuilderNowSW[1] 	= GUICtrlCreateLabel("", 		$x + 93,  $y + 93, 32, 17, $SS_RIGHT)
 		$g_lblTimeNowSW[1] 		= GUICtrlCreateLabel("No Data", $x + 146, $y + 93, 58, 17, $SS_CENTER)
 		
-		$g_lblPopOutSW[1]		= GUICtrlCreateLabel(" ", 		$x + 208, $y + 25, 15, 10, $SS_CENTER)
-			GUICtrlSetBkColor(-1, 0x9696CB)
+		$g_lblPopOutSW[1] 		= GUICtrlCreateIcon($pIconLib, $eIcnMove, 		$x + 208,  $y + 27, 12, 12)
 			GUICtrlSetOnEvent($g_lblPopOutSW[1],"PopOut1")
+			
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 	$g_grpVillageSW[2] 			= GUICtrlCreateGroup("Account 2", $x + 16, $y + 120, 209, 97, BitOR($GUI_SS_DEFAULT_GROUP,$BS_FLAT))
@@ -307,6 +307,8 @@ For $i = 1 To 8
 Next
 
 Func PopOut1()
+	GUICtrlSetState($g_lblPopOutSW[1], $GUI_DISABLE)
+
 	Global $hGuiPopOut1 = GUICreate("", 220, 105, -1, -1, BitOR($WS_SYSMENU, $WS_POPUP))
 	GUISwitch($hGuiPopOut1)
 	Local $x = -10, $y = -15
@@ -349,9 +351,9 @@ Func PopOut1()
 		$g_lblTimeNowPO[1] 		= GUICtrlCreateLabel("No Data", $x + 146, $y + 93, 58, 17, $SS_CENTER)
 			GUICtrlSetData(-1,GUICtrlRead($g_lblTimeNowSW[1]))
 
-		$g_lblPopOutEX[1]		= GUICtrlCreateLabel(" ", 		$x + 208, $y + 25, 15, 10, $SS_CENTER)
-		GUICtrlSetBkColor(-1, 0x9696CB)
+		$g_lblPopOutEX[1] 	= GUICtrlCreateIcon($pIconLib, $eIcnDelete, 	$x + 208, $y + 27, 12, 12)
 			GUICtrlSetOnEvent($g_lblPopOutEX[1],"PopOutEX1")
+			
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 	GUIRegisterMsg($WM_NCHITTEST, "_MY_NCHITTEST")
 GUISetState(@SW_SHOW)
@@ -369,5 +371,7 @@ EndFunc
 
  Func PopOutEX1()
 	 GUIDelete($hGuiPopOut1)
+	 GUICtrlSetState($g_lblPopOutSW[1], $GUI_ENABLE)
+
  EndFunc
 
