@@ -53,6 +53,8 @@ Func CheckDisplay()
 				$bDisplayFound = True
 				$bMonitorHeight800orBelow = ($aMonitorData[$i][4] <= 800)
 				$sBSDisplaySize = $aMonitorData[$i][3] & "x" & $aMonitorData[$i][4]
+				$g_iMonitorX = $aMonitorData[$i][3]
+				$g_iMonitorY = $aMonitorData[$i][4]
 				ConsoleWrite("DisplaySizeFound: " & $sBSDisplaySize & @CRLF)
 				If ($aMonitorData[$i][3] < $iDisplaySizeMin) Or ($aMonitorData[$i][4] < $iDisplaySizeMin) Then
 					SetLog(_PadStringCenter(" Warning!! Display size smaller than recommended = " & $sBSDisplaySize & " ", 53, "+"), $COLOR_ERROR)

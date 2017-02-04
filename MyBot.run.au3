@@ -301,6 +301,18 @@ Func runBot() ;Bot that runs everything in order
 			If _Sleep($iDelayRunBot5) Then Return
 			checkMainScreen(False)
 			If $Restart = True Then ContinueLoop
+			
+			If Labstatus() Then ; Faster Getting an Updated State of Lab Running, or Stopped
+				GUICtrlSetBkColor($g_lblLabStatus[$CurrentAccount], $COLOR_GREEN)
+				GUICtrlSetBkColor($g_lblLabStatusPO[$CurrentAccount], $COLOR_GREEN)
+			Else
+				GUICtrlSetBkColor($g_lblLabStatus[$CurrentAccount], $COLOR_RED)
+				GUICtrlSetBkColor($g_lblLabStatusPO[$CurrentAccount], $COLOR_RED)
+			EndIf
+			
+			If _Sleep($iDelayRunBot5) Then Return
+			checkMainScreen(False)
+			If $Restart = True Then ContinueLoop
 			Local $aRndFuncList = ['Collect', 'CheckTombs', 'ReArm', 'CleanYard']
 			While 1
 				If $RunState = False Then Return
@@ -424,6 +436,7 @@ Func Idle() ;Sequence that runs until Full Army
 	Local $TimeIdle = 0 ;In Seconds
 	If $debugsetlog = 1 Then SetLog("Func Idle ", $COLOR_DEBUG)
 
+	RequestCC()
 	While $IsFullArmywithHeroesAndSpells = False
 		checkAndroidReboot()
 

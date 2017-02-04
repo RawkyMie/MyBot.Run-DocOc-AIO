@@ -17,9 +17,9 @@ Func SwitchAccount($Init = False)
 	Local Static $iRetry = 0
 
 	If $ichkSwitchAccount = 1 And $g_bSwitchAcctPrereq Then
-
 		If $Init Then $FirstInit = False
-	;Get Lab Status - Green = lab running
+		
+	;======Get Lab Status - Green = lab running=======
 		If Not $Init And Labstatus() Then
 			GUICtrlSetBkColor($g_lblLabStatus[$CurrentAccount], $COLOR_GREEN)
 			GUICtrlSetBkColor($g_lblLabStatusPO[$CurrentAccount], $COLOR_GREEN)
@@ -27,16 +27,14 @@ Func SwitchAccount($Init = False)
 			GUICtrlSetBkColor($g_lblLabStatus[$CurrentAccount], $COLOR_RED)
 			GUICtrlSetBkColor($g_lblLabStatusPO[$CurrentAccount], $COLOR_RED)
 		EndIf
-	; King Queen Warden Status Now Updated in GetArmyHeroStatus.au3 in CreateArmy
-		
+	; Get King Queen Warden Status
+;		If Not $Init Then HeroStatsStaus() ; Updated in GetArmyHeroStatus(), No Need to update here also.
+	
 		checkMainScreen()
 		Setlog("Starting SmartSwitchAccount...", $COLOR_SUCCESS)
 		MakeSummaryLog()
 
 		If Not $Init And $ichkDonateAccount[$CurrentAccount] = 0 Then GetWaitTime() ; gets wait time for current account
-		;If Not $Init And  $ichkDonateAccount[$CurrentAccount] = 0 Then ; $CurrentAccountWaitTime = 0 And May Cause possable endless loop
-			;SetLog("Your Army is ready so I stay here, I'm a thug !!! ;P", $COLOR_SUCCESS)
-		;Else
 		If $Init Then
 			SetLog("Initialization of SmartSwitchAccount...", $COLOR_INFO)
 			$CurrentAccount = 1
@@ -194,7 +192,6 @@ Func SwitchAccount($Init = False)
 					runBot()
 				EndIf
 
-			;EndIf
 		EndIf
 	Else ;ok
 		$FirstInit = False
@@ -553,6 +550,8 @@ EndFunc   ;==>cmbAccountsQuantity
 Func chkSwitchAccount()
 
 	If GUICtrlRead($chkEnableSwitchAccount) = $GUI_CHECKED Then
+		GUICtrlSetState($g_icnPopOutSW[0], $GUI_HIDE)
+		HideShowMultiStat("SHOW")
 		For $i = $lblNB To $chkDonateAccount[8]
 			GUICtrlSetState($i, $GUI_ENABLE)
 		Next
@@ -560,6 +559,8 @@ Func chkSwitchAccount()
 		;chkAccountsProperties()
 		$ichkSwitchAccount = 1
 	Else
+		GUICtrlSetState($g_icnPopOutSW[0], $GUI_SHOW)
+		HideShowMultiStat("HIDE")
 		For $i = $lblNB To $chkDonateAccount[8]
 			GUICtrlSetState($i, $GUI_DISABLE)
 		Next
@@ -598,6 +599,7 @@ Func chkAccountsProperties()
 			GUICtrlSetState($g_lblUnitMeasureSW3[$h], $GUI_SHOW)
 			GUICtrlSetState($g_lblTimeNowSW[$h], $GUI_SHOW)
 			GUICtrlSetState($g_grpVillageSW[$h], $GUI_SHOW)
+			GUICtrlSetState($g_icnPopOutSW[$h], $GUI_SHOW)
 		Else
 			For $i = $cmbAccount[$h] To $chkDonateAccount[$h]
 				GUICtrlSetState($i, $GUI_DISABLE)
@@ -619,6 +621,7 @@ Func chkAccountsProperties()
 			GUICtrlSetState($g_lblUnitMeasureSW3[$h], $GUI_HIDE)
 			GUICtrlSetState($g_lblTimeNowSW[$h], $GUI_HIDE)
 			GUICtrlSetState($g_grpVillageSW[$h], $GUI_HIDE)
+			GUICtrlSetState($g_icnPopOutSW[$h], $GUI_HIDE)
 
 		EndIf
 
@@ -777,9 +780,9 @@ Func LabStatus()
 		If $RunState = False Then Return
 
 	If $TimeDiff <= 0 Then
-		SetLog("Laboratory Running State ...", $COLOR_INFO)
+		SetLog("Checking Laboratory Activity Status ...", $COLOR_INFO)
 	Else
-		SetLog("Laboratory is Running", $COLOR_INFO)
+		SetLog("Laboratory is Running. ", $COLOR_INFO)
 		Return True
 	EndIf
 

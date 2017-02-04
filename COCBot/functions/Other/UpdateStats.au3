@@ -435,9 +435,7 @@ Func UpdateStats()
 		$ResetStats = 0
 	EndIf
 
-	If $ichkSwitchAccount = 1 Then
-		UpdateStatsSwitchMode()
-	EndIf
+UpdateStatsSwitchMode()
 EndFunc   ;==>UpdateStats
 
 Func ResetStats()

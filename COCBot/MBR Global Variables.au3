@@ -660,6 +660,39 @@ Global $COLLECTATCOUNT = 10 ; Run Collect() after this amount of times before ac
 Global $BSpos[2] ; Inside Android window positions relative to the screen, [x,y]
 Global $BSrpos[2] ; Inside Android window positions relative to the window, [x,y]
 ;---------------------------------------------------------------------------------------------------
+
+
+;=================Multi Stat's GUI==========================================
+
+Global $g_grpVillageSW[9], $g_icnPopOutSW[9]										;Static
+
+Global $g_lblGoldNowSW[9], $g_lblElixirNowSW[9], $g_lblDarkNowSW[9]							; Values get Updated
+Global $g_lblHrStatsGoldSW[9], $g_lblHrStatsElixirSW[9], $g_lblHrStatsDarkSW[9]				; Values get Updated
+
+Global $g_icnGoldSW[9], $g_icnElixirSW[9], $g_icnDarkSW[9]							;Static
+Global $g_lblUnitMeasureSW1[9], $g_lblUnitMeasureSW2[9], $g_lblUnitMeasureSW3[9]	;Static
+Global $g_icnGemSW[9], $g_icnBuliderSW[9], $g_icnHourGlassSW[9]						;Static
+
+Global $g_lblKingStatus[9], $g_lblQueenStatus[9], $g_lblWardenStatus[9]						; Values get Updated
+Global $g_lblLabStatus[9],$g_lblGemNowSW[9], $g_lblBuilderNowSW[9], $g_lblTimeNowSW[9]		; Values get Updated
+
+;==================eXPERMENTAL pOPOUT==============================
+Global $g_grpVillagePO[9], $g_icnPopOutEX[9]										;Static  -- declare for eval
+
+Global $g_lblGoldNowPO[9], $g_lblElixirNowPO[9], $g_lblDarkNowPO[9]							; Values get Updated
+Global $g_lblHrStatsGoldPO[9], $g_lblHrStatsElixirPO[9], $g_lblHrStatsDarkPO[9]				; Values get Updated
+
+Global $g_icnGoldPO[9], $g_icnElixirPO[9], $g_icnDarkPO[9]							;Static
+Global $g_lblUnitMeasurePO1[9], $g_lblUnitMeasurePO2[9], $g_lblUnitMeasurePO3[9]	;Static
+Global $g_icnGemPO[9], $g_icnBuliderPO[9], $g_icnHourGlassPO[9]						;Static
+
+Global $g_lblKingStatusPO[9], $g_lblQueenStatusPO[9], $g_lblWardenStatusPO[9]				; Values get Updated
+Global $g_lblLabStatusPO[9],$g_lblGemNowPO[9], $g_lblBuilderNowPO[9], $g_lblTimeNowPO[9]	; Values get Updated
+Global $hGuiPopOut , $hGuiPopOut0, $hGuiPopOut1, $hGuiPopOut2, $hGuiPopOut3 	
+Global $hGuiPopOut4, $hGuiPopOut5, $hGuiPopOut6, $hGuiPopOut7, $hGuiPopOut8	
+Global $g_iMonitorX, $g_iMonitorY
+;============================================================================
+
 ;Stats
 Global $iskipped
 Global $iTestFreeBuilderCount = -1 ; used for test cases, -1 = disabled

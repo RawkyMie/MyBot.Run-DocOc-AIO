@@ -1063,12 +1063,16 @@ Func ControlRedraw($hWin, $ConrolId)
 EndFunc   ;==>ControlRedraw
 
 Func SetTime($bForceUpdate = False)
+	Local Static $DisplayLoop = 0
 	Local $time = _TicksToTime(Int(TimerDiff($sTimer) + $iTimePassed), $hour, $min, $sec)
 	If GUICtrlRead($hGUI_STATS_TAB, 1) = $hGUI_STATS_TAB_ITEM2 Or $bForceUpdate = True Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 	If GUICtrlGetState($lblResultGoldNow) <> $GUI_ENABLE + $GUI_SHOW Or $bForceUpdate = True Then GUICtrlSetData($lblResultRuntimeNow, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 
-	If GUICtrlRead($hGUI_BOT_TAB, 1) = $hGUI_BOT_TAB_ITEM6 Then
-		If $ichkSwitchAccount = 1 Then
+	If $DisplayLoop >= 10 Then ; Conserve Clock Cycles on Updating times
+		$DisplayLoop = 0
+	;Update Multi Stat Page
+		If GUICtrlRead($hGUI_BOT_TAB, 1) = $hGUI_BOT_TAB_ITEM6 And $CurrentAccount <> 0 Then
+
 			For $i = 1 To 8 ; Update time for all Accounts
 				If $ichkCanUse[$i] = 1 And _
 					$ichkDonateAccount[$i] <> 1 And _
@@ -1077,25 +1081,64 @@ Func SetTime($bForceUpdate = False)
 					(GUICtrlRead($g_lblTimeNowSW[$i]) <> "No Data" Or GUICtrlRead($g_lblTimeNowSW[$i]) <> "Looting") Then ; Only update labels that need a time
 
 
-					$TimerDiffEnd[$i] = TimerDiff($TimerDiffStart[$i])
-					$AllAccountsWaitTimeDiff[$i] = Round($AllAccountsWaitTime[$i] * 60 * 1000 - $TimerDiffEnd[$i], 2)
-					;	 Round($AllAccountsWaitTimeDiff[$x] / 60 / 1000, 2)   Formula for Mins
-					If $AllAccountsWaitTimeDiff[$i] < 0 Then
-						GUICtrlSetData($g_lblTimeNowSW[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
-						GUICtrlSetFont($g_lblTimeNowSW[$i], 8, 800, 0, "MS Sans Serif")
-						GUICtrlSetBkColor($g_lblTimeNowSW[$i], $COLOR_RED)
-						GUICtrlSetColor($g_lblTimeNowSW[$i], $COLOR_BLACK)
-					Else
-						GUICtrlSetData($g_lblTimeNowSW[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
-						GUICtrlSetFont($g_lblTimeNowSW[$i], 8, 800, 0, "MS Sans Serif")
-						GUICtrlSetBkColor($g_lblTimeNowSW[$i], $COLOR_YELLOW)
-						GUICtrlSetColor($g_lblTimeNowSW[$i], $COLOR_BLACK)
-					EndIf
+						$TimerDiffEnd[$i] = TimerDiff($TimerDiffStart[$i])
+						$AllAccountsWaitTimeDiff[$i] = Round($AllAccountsWaitTime[$i] * 60 * 1000 - $TimerDiffEnd[$i], 2)
+
+						If $AllAccountsWaitTimeDiff[$i] < 0 Then
+							GUICtrlSetData($g_lblTimeNowSW[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
+
+							GUICtrlSetBkColor($g_lblTimeNowSW[$i], $COLOR_RED)
+							GUICtrlSetColor($g_lblTimeNowSW[$i], $COLOR_BLACK)
+						Else
+							GUICtrlSetData($g_lblTimeNowSW[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
+
+							GUICtrlSetBkColor($g_lblTimeNowSW[$i], $COLOR_YELLOW)
+							GUICtrlSetColor($g_lblTimeNowSW[$i], $COLOR_BLACK)
+						EndIf
+
+					GUICtrlSetData($g_lblHrStatsGoldSW[$i], _NumberFormat(Round($g_iGoldTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+					GUICtrlSetData($g_lblHrStatsElixirSW[$i], _NumberFormat(Round($g_iElixirTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+					GUICtrlSetData($g_lblHrStatsDarkSW[$i], _NumberFormat(Round($g_iDarkTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
 				EndIf
 			Next
 		EndIf
-	EndIf
+	;Update PopOut's
+		For $i = 1 To 8
+			If WinGetState(Eval($hGuiPopOut & $i)) <> -1 Then
+				If $ichkCanUse[$i] = 1 And _
+					$ichkDonateAccount[$i] <> 1 And _
+					$i <> $CurrentAccount And _
+					$TimerDiffStart[$i] <> 0 And _
+					(GUICtrlRead($g_lblTimeNowPO[$i]) <> "No Data" Or GUICtrlRead($g_lblTimeNowPO[$i]) <> "Looting") Then ; Only update labels that need a time
 
+						$TimerDiffEnd[$i] = TimerDiff($TimerDiffStart[$i])
+						$AllAccountsWaitTimeDiff[$i] = Round($AllAccountsWaitTime[$i] * 60 * 1000 - $TimerDiffEnd[$i], 2)
+						If $AllAccountsWaitTimeDiff[$i] < 0 Then
+							GUICtrlSetData($g_lblTimeNowPO[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
+							GUICtrlSetBkColor($g_lblTimeNowPO[$i], $COLOR_RED)
+							GUICtrlSetColor($g_lblTimeNowPO[$i], $COLOR_BLACK)
+						Else
+							GUICtrlSetData($g_lblTimeNowPO[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
+							GUICtrlSetBkColor($g_lblTimeNowPO[$i], $COLOR_YELLOW)
+							GUICtrlSetColor($g_lblTimeNowPO[$i], $COLOR_BLACK)
+						EndIf
+
+					GUICtrlSetData($g_lblHrStatsGoldPO[$i], _NumberFormat(Round($g_iGoldTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+					GUICtrlSetData($g_lblHrStatsElixirPO[$i], _NumberFormat(Round($g_iElixirTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+					GUICtrlSetData($g_lblHrStatsDarkPO[$i], _NumberFormat(Round($g_iDarkTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
+				EndIf
+			EndIf
+		Next
+	EndIf
+	If $CurrentAccount = 0 Then
+		GUICtrlSetData($g_lblTimeNowPO[$CurrentAccount], "Looting" )
+		GUICtrlSetBkColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_GREEN)
+		GUICtrlSetColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_BLACK)
+		GUICtrlSetData($g_lblHrStatsGoldPO[$CurrentAccount], _NumberFormat(Round($g_iGoldTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+		GUICtrlSetData($g_lblHrStatsElixirPO[$CurrentAccount], _NumberFormat(Round($g_iElixirTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+		GUICtrlSetData($g_lblHrStatsDarkPO[$CurrentAccount], _NumberFormat(Round($g_iDarkTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
+	EndIf
+	$DisplayLoop += 1
 EndFunc   ;==>SetTime
 
 Func tabMain()
@@ -1603,7 +1646,7 @@ Func Bind_ImageList($nCtrl)
 			Local $aIconIndex[6] = [$eIcnMagnifier, $eIcnCamp, $eIcnSilverStar, $eIcnTrophy, $eIcnOptions, $eIcnLightSpell]
 
 		Case $hGUI_BOT_TAB
-			; the icons for Bot tab  
+			; the icons for Bot tab
 			Local $aIconIndex[6] = [$eIcnOptions, $eIcnBrain, $eIcnAndroid, $eIcnBug, $eIcnChart, $eIcnMultiChart]
 			; The Android Robot is a Google Trademark and follows Creative Common Attribution 3.0
 
