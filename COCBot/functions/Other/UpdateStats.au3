@@ -13,7 +13,7 @@
 ; Example .......:
 ; ===============================================================================================================================
 
-Func UpdateStats()
+Func UpdateStats($bForceUpdateAll = False)
 	Local Static $iAttackedCountStatic = 0, $iOldAttackedCount = 0
 	Local Static $iOLDGoldCurrentStatic[9] , $iOLDElixirCurrentStatic[9] , $iOLDDarkCurrentStatic[9] , $iOLDTrophyCurrentStatic[9]  ; current stats
 	Local Static $iOldFreeBuilderCount[9], $iOldTotalBuilderCount[9], $iOldGemAmount[9] ; builder and gem amounts
@@ -95,7 +95,7 @@ Func UpdateStats()
 		;Updated Above Start Values only need one TimerDiff
 
 	;Gain Per Hour
-	If $FirstAttack = 2 Then
+	If $FirstAttack = 2  Then
 		GUICtrlSetData($lblHourlyStatsGold, _NumberFormat(Round($g_iGoldTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & "K / h")
 		GUICtrlSetData($lblHourlyStatsElixir, _NumberFormat(Round($g_iElixirTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) & "K / h")
 		If $g_iDarkStart[$CurrentAccount] <> "" Then
@@ -111,80 +111,80 @@ Func UpdateStats()
 	EndIf
 
 	; Total Gain
-	If $iOldGoldTotal[$CurrentAccount] <> $g_iGoldTotal[$CurrentAccount] And ($FirstAttack = 2 Or $ResetStats = 1) Then
+	If $bForceUpdateAll = True Or ($iOldGoldTotal[$CurrentAccount] <> $g_iGoldTotal[$CurrentAccount] And ($FirstAttack = 2 Or $ResetStats = 1)) Then
 		GUICtrlSetData($lblGoldLoot, _NumberFormat($g_iGoldTotal[$CurrentAccount]))
 		$iOldGoldTotal[$CurrentAccount] = $g_iGoldTotal[$CurrentAccount]
 	EndIf
 
-	If $iOldElixirTotal[$CurrentAccount] <> $g_iElixirTotal[$CurrentAccount] And ($FirstAttack = 2 Or $ResetStats = 1) Then
+	If $bForceUpdateAll = True Or ($iOldElixirTotal[$CurrentAccount] <> $g_iElixirTotal[$CurrentAccount] And ($FirstAttack = 2 Or $ResetStats = 1)) Then
 		GUICtrlSetData($lblElixirLoot, _NumberFormat($g_iElixirTotal[$CurrentAccount]))
 		$iOldElixirTotal[$CurrentAccount] = $g_iElixirTotal[$CurrentAccount]
 	EndIf
 
-	If $iOldDarkTotal[$CurrentAccount] <> $g_iDarkTotal[$CurrentAccount] And (($FirstAttack = 2 And $g_iDarkStart[$CurrentAccount] <> "") Or $ResetStats = 1) Then
+	If $bForceUpdateAll = True Or ($iOldDarkTotal[$CurrentAccount] <> $g_iDarkTotal[$CurrentAccount] And (($FirstAttack = 2 And $g_iDarkStart[$CurrentAccount] <> "") Or $ResetStats = 1)) Then
 		GUICtrlSetData($lblDarkLoot, _NumberFormat($g_iDarkTotal[$CurrentAccount]))
 		$iOldDarkTotal[$CurrentAccount] = $g_iDarkTotal[$CurrentAccount]
 	EndIf
 
-	If $iOldTrophyTotal[$CurrentAccount] <> $g_iTrophyTotal[$CurrentAccount] And ($FirstAttack = 2 Or $ResetStats = 1) Then
+	If $bForceUpdateAll = True Or ($iOldTrophyTotal[$CurrentAccount] <> $g_iTrophyTotal[$CurrentAccount] And ($FirstAttack = 2 Or $ResetStats = 1)) Then
 		GUICtrlSetData($lblTrophyLoot, _NumberFormat($g_iTrophyTotal[$CurrentAccount]))
 		$iOldTrophyTotal[$CurrentAccount] = $g_iTrophyTotal[$CurrentAccount]
 	EndIf
 
 	;Last Attack
-	If $iOldGoldLast[$CurrentAccount] <> $g_iGoldLast[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldGoldLast[$CurrentAccount] <> $g_iGoldLast[$CurrentAccount] Then
 		GUICtrlSetData($lblGoldLastAttack, _NumberFormat($g_iGoldLast[$CurrentAccount]))
 		$iOldGoldLast[$CurrentAccount] = $g_iGoldLast[$CurrentAccount]
 	EndIf
 
-	If $iOldElixirLast[$CurrentAccount] <> $g_iElixirLast[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldElixirLast[$CurrentAccount] <> $g_iElixirLast[$CurrentAccount] Then
 		GUICtrlSetData($lblElixirLastAttack, _NumberFormat($g_iElixirLast[$CurrentAccount]))
 		$iOldElixirLast[$CurrentAccount] = $g_iElixirLast[$CurrentAccount]
 	EndIf
 
-	If $iOldDarkLast[$CurrentAccount] <> $g_iDarkLast[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldDarkLast[$CurrentAccount] <> $g_iDarkLast[$CurrentAccount] Then
 		GUICtrlSetData($lblDarkLastAttack, _NumberFormat($g_iDarkLast[$CurrentAccount]))
 		$iOldDarkLast[$CurrentAccount] = $g_iDarkLast[$CurrentAccount]
 	EndIf
 
-	If $iOldTrophyLast[$CurrentAccount] <> $g_iTrophyLast[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldTrophyLast[$CurrentAccount] <> $g_iTrophyLast[$CurrentAccount] Then
 		GUICtrlSetData($lblTrophyLastAttack, _NumberFormat($g_iTrophyLast[$CurrentAccount]))
 		$iOldTrophyLast[$CurrentAccount] = $g_iTrophyLast[$CurrentAccount]
 	EndIf
 
 	;League Bonus
-	If $iOldGoldLastBonus[$CurrentAccount] <> $g_iGoldLastBonus[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldGoldLastBonus[$CurrentAccount] <> $g_iGoldLastBonus[$CurrentAccount] Then
 		GUICtrlSetData($lblGoldBonusLastAttack, _NumberFormat($g_iGoldLastBonus[$CurrentAccount]))
 		$iOldGoldLastBonus[$CurrentAccount] = $g_iGoldLastBonus[$CurrentAccount]
 	EndIf
 
-	If $iOldElixirLastBonus[$CurrentAccount] <> $g_iElixirLastBonus[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldElixirLastBonus[$CurrentAccount] <> $g_iElixirLastBonus[$CurrentAccount] Then
 		GUICtrlSetData($lblElixirBonusLastAttack, _NumberFormat($g_iElixirLastBonus[$CurrentAccount]))
 		$iOldElixirLastBonus[$CurrentAccount] = $g_iElixirLastBonus[$CurrentAccount]
 	EndIf
 
-	If $iOldDarkLastBonus[$CurrentAccount] <> $g_iDarkLastBonus[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldDarkLastBonus[$CurrentAccount] <> $g_iDarkLastBonus[$CurrentAccount] Then
 		GUICtrlSetData($lblDarkBonusLastAttack, _NumberFormat($g_iDarkLastBonus[$CurrentAccount]))
 		$iOldDarkLastBonus[$CurrentAccount] = $g_iDarkLastBonus[$CurrentAccount]
 	EndIf
 
 	;Top Loot
-	If Number($g_iGoldLast[$CurrentAccount]) > Number($topgoldloot) Then
+	If $bForceUpdateAll = True Or Number($g_iGoldLast[$CurrentAccount]) > Number($topgoldloot) Then
 		$topgoldloot = $g_iGoldLast[$CurrentAccount]
 		GUICtrlSetData($lbltopgoldloot, _NumberFormat($topgoldloot))
 	EndIf
 
-	If Number($g_iElixirLast[$CurrentAccount]) > Number($topelixirloot) Then
+	If $bForceUpdateAll = True Or Number($g_iElixirLast[$CurrentAccount]) > Number($topelixirloot) Then
 		$topelixirloot = $g_iElixirLast[$CurrentAccount]
 		GUICtrlSetData($lbltopelixirloot, _NumberFormat($topelixirloot))
 	EndIf
 
-	If Number($g_iDarkLast[$CurrentAccount]) > Number($topdarkloot) Then
+	If $bForceUpdateAll = True Or Number($g_iDarkLast[$CurrentAccount]) > Number($topdarkloot) Then
 		$topdarkloot = $g_iDarkLast[$CurrentAccount]
 		GUICtrlSetData($lbltopdarkloot, _NumberFormat($topdarkloot))
 	EndIf
 
-	If Number($g_iTrophyLast[$CurrentAccount]) > Number($topTrophyloot) Then
+	If $bForceUpdateAll = True Or Number($g_iTrophyLast[$CurrentAccount]) > Number($topTrophyloot) Then
 		$topTrophyloot = $g_iTrophyLast[$CurrentAccount]
 		GUICtrlSetData($lbltopTrophyloot, _NumberFormat($topTrophyloot))
 	EndIf
@@ -193,7 +193,7 @@ Func UpdateStats()
 	;Section Run
 		;runtime - updated in func settime
 		;Nbr Of Oos Left as a total/ Not per Account
-		If $iOldNbrOfOoS <> $iNbrOfOoS Then
+		If $bForceUpdateAll = True Or $iOldNbrOfOoS <> $iNbrOfOoS Then
 			GUICtrlSetData($lblNbrOfOoS, $iNbrOfOoS)
 			$iOldNbrOfOoS = $iNbrOfOoS
 		EndIf
@@ -202,100 +202,100 @@ Func UpdateStats()
 			;Updated In updateStats in the section attack
 
 		;Skipped Per Account
-		If $iOldSkippedVillageCount[$CurrentAccount] <> $g_iSkippedVillageCount[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldSkippedVillageCount[$CurrentAccount] <> $g_iSkippedVillageCount[$CurrentAccount] Then
 			GUICtrlSetData($lblresultvillagesskipped, _NumberFormat($g_iSkippedVillageCount[$CurrentAccount], True))
 			GUICtrlSetData($lblResultSkippedHourNow, _NumberFormat($g_iSkippedVillageCount[$CurrentAccount], True))
 			$iOldSkippedVillageCount[$CurrentAccount] = $g_iSkippedVillageCount[$CurrentAccount]
 		EndIf
 
 		;Dropped Trophies Per Account
-		If $iOldDroppedTrophyCount[$CurrentAccount] <> $g_iDroppedTrophyCount[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldDroppedTrophyCount[$CurrentAccount] <> $g_iDroppedTrophyCount[$CurrentAccount] Then
 			GUICtrlSetData($lblresulttrophiesdropped, _NumberFormat($g_iDroppedTrophyCount[$CurrentAccount], True))
 			$iOldDroppedTrophyCount[$CurrentAccount] = $g_iDroppedTrophyCount[$CurrentAccount]
 		EndIf
 
 	;Section Cost & Collect
 		;Search Cost
-		If $iOldSearchCost[$CurrentAccount] <> $g_iSearchCost[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldSearchCost[$CurrentAccount] <> $g_iSearchCost[$CurrentAccount] Then
 			GUICtrlSetData($lblSearchCost, _NumberFormat($g_iSearchCost[$CurrentAccount], True))
 			$iOldSearchCost[$CurrentAccount] = $g_iSearchCost[$CurrentAccount]
 		EndIf
 		;Train Cost Elixir
-		If $iOldTrainCostElixir[$CurrentAccount] <> $g_iTrainCostElixir[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldTrainCostElixir[$CurrentAccount] <> $g_iTrainCostElixir[$CurrentAccount] Then
 			GUICtrlSetData($lblTrainCostElixir, _NumberFormat($g_iTrainCostElixir[$CurrentAccount], True))
 			$iOldTrainCostElixir[$CurrentAccount] = $g_iTrainCostElixir[$CurrentAccount]
 		EndIf
 		;Train Cost DElixir
-		If $iOldTrainCostDElixir[$CurrentAccount] <> $g_iTrainCostDElixir[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldTrainCostDElixir[$CurrentAccount] <> $g_iTrainCostDElixir[$CurrentAccount] Then
 			GUICtrlSetData($lblTrainCostDElixir, _NumberFormat($g_iTrainCostDElixir[$CurrentAccount], True))
 			$iOldTrainCostDElixir[$CurrentAccount] = $g_iTrainCostDElixir[$CurrentAccount]
 		EndIf
 		;Gold Collected
-		If $iOldGoldFromMines[$CurrentAccount] <> $g_iGoldFromMines[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldGoldFromMines[$CurrentAccount] <> $g_iGoldFromMines[$CurrentAccount] Then
 			GUICtrlSetData($lblGoldFromMines, _NumberFormat($g_iGoldFromMines[$CurrentAccount], True))
 			$iOldGoldFromMines[$CurrentAccount] = $g_iGoldFromMines[$CurrentAccount]
 		EndIf
 		;Elixir Collected
-		If $iOldElixirFromCollectors[$CurrentAccount] <> $g_iElixirFromCollectors[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldElixirFromCollectors[$CurrentAccount] <> $g_iElixirFromCollectors[$CurrentAccount] Then
 			GUICtrlSetData($lblElixirFromCollectors, _NumberFormat($g_iElixirFromCollectors[$CurrentAccount], True))
 			$iOldElixirFromCollectors[$CurrentAccount] = $g_iElixirFromCollectors[$CurrentAccount]
 		EndIf
 		;Dark Collected
-		If $iOldDElixirFromDrills[$CurrentAccount] <> $g_iDElixirFromDrills[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldDElixirFromDrills[$CurrentAccount] <> $g_iDElixirFromDrills[$CurrentAccount] Then
 			GUICtrlSetData($lblDElixirFromDrills, _NumberFormat($g_iDElixirFromDrills[$CurrentAccount], True))
 			$iOldDElixirFromDrills[$CurrentAccount] = $g_iDElixirFromDrills[$CurrentAccount]
 		EndIf
 	;Section Upgrades Made
 		;walls by Gold
-		If $iOldNbrOfWallsUppedGold[$CurrentAccount] <> $g_iNbrOfWallsUppedGold[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfWallsUppedGold[$CurrentAccount] <> $g_iNbrOfWallsUppedGold[$CurrentAccount] Then
 			GUICtrlSetData($lblWallgoldmake, $g_iNbrOfWallsUppedGold[$CurrentAccount])
 			$iOldNbrOfWallsUppedGold[$CurrentAccount] = $g_iNbrOfWallsUppedGold[$CurrentAccount]
 			WallsStatsMAJ()
 		EndIf
 		;walls by elixir
-		If $iOldNbrOfWallsUppedElixir[$CurrentAccount] <> $g_iNbrOfWallsUppedElixir[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfWallsUppedElixir[$CurrentAccount] <> $g_iNbrOfWallsUppedElixir[$CurrentAccount] Then
 			GUICtrlSetData($lblWallelixirmake, $g_iNbrOfWallsUppedElixir[$CurrentAccount])
 			$iOldNbrOfWallsUppedElixir[$CurrentAccount] = $g_iNbrOfWallsUppedElixir[$CurrentAccount]
 			WallsStatsMAJ()
 		EndIf
 		;building by gold
-		If $iOldNbrOfBuildingsUppedGold[$CurrentAccount] <> $g_iNbrOfBuildingsUppedGold[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfBuildingsUppedGold[$CurrentAccount] <> $g_iNbrOfBuildingsUppedGold[$CurrentAccount] Then
 			GUICtrlSetData($lblNbrOfBuildingUpgGold, $g_iNbrOfBuildingsUppedGold[$CurrentAccount])
 			$iOldNbrOfBuildingsUppedGold[$CurrentAccount] = $g_iNbrOfBuildingsUppedGold[$CurrentAccount]
 		EndIf
 		;building by elixir
-		If $iOldNbrOfBuildingsUppedElixir[$CurrentAccount] <> $g_iNbrOfBuildingsUppedElixir[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfBuildingsUppedElixir[$CurrentAccount] <> $g_iNbrOfBuildingsUppedElixir[$CurrentAccount] Then
 			GUICtrlSetData($lblNbrOfBuildingUpgElixir, $g_iNbrOfBuildingsUppedElixir[$CurrentAccount])
 			$iOldNbrOfBuildingsUppedElixir[$CurrentAccount] = $g_iNbrOfBuildingsUppedElixir[$CurrentAccount]
 		EndIf
 		;Hero upgrade
-		If $iOldNbrOfHeroesUpped[$CurrentAccount] <> $g_iNbrOfHeroesUpped[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfHeroesUpped[$CurrentAccount] <> $g_iNbrOfHeroesUpped[$CurrentAccount] Then
 			GUICtrlSetData($lblNbrOfHeroUpg, $g_iNbrOfHeroesUpped[$CurrentAccount])
 			$iOldNbrOfHeroesUpped[$CurrentAccount] = $g_iNbrOfHeroesUpped[$CurrentAccount]
 		EndIf
 	;Section Upgrade Costs
 		;wall cost gold
-		If $iOldCostGoldWall[$CurrentAccount] <> $g_iCostGoldWall[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldCostGoldWall[$CurrentAccount] <> $g_iCostGoldWall[$CurrentAccount] Then
 			GUICtrlSetData($lblWallUpgCostGold, _NumberFormat($g_iCostGoldWall[$CurrentAccount], True))
 			$iOldCostGoldWall[$CurrentAccount] = $g_iCostGoldWall[$CurrentAccount]
 		EndIf
 		;wall cost elixir
-		If $iOldCostElixirWall[$CurrentAccount] <> $g_iCostElixirWall[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldCostElixirWall[$CurrentAccount] <> $g_iCostElixirWall[$CurrentAccount] Then
 			GUICtrlSetData($lblWallUpgCostElixir, _NumberFormat($g_iCostElixirWall[$CurrentAccount], True))
 			$iOldCostElixirWall[$CurrentAccount] = $g_iCostElixirWall[$CurrentAccount]
 		EndIf
 		;building cost gold
-		If $iOldCostGoldBuilding[$CurrentAccount] <> $g_iCostGoldBuilding[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldCostGoldBuilding[$CurrentAccount] <> $g_iCostGoldBuilding[$CurrentAccount] Then
 			GUICtrlSetData($lblBuildingUpgCostGold, _NumberFormat($g_iCostGoldBuilding[$CurrentAccount], True))
 			$iOldCostGoldBuilding[$CurrentAccount] = $g_iCostGoldBuilding[$CurrentAccount]
 		EndIf
 		;building cost elixir
-		If $iOldCostElixirBuilding[$CurrentAccount] <> $g_iCostElixirBuilding[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldCostElixirBuilding[$CurrentAccount] <> $g_iCostElixirBuilding[$CurrentAccount] Then
 			GUICtrlSetData($lblBuildingUpgCostElixir, _NumberFormat($g_iCostElixirBuilding[$CurrentAccount], True))
 			$iOldCostElixirBuilding[$CurrentAccount] = $g_iCostElixirBuilding[$CurrentAccount]
 		EndIf
 		;upgrade cost dark elixir
-		If $iOldCostDElixirHero[$CurrentAccount] <> $g_iCostDElixirHero[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldCostDElixirHero[$CurrentAccount] <> $g_iCostDElixirHero[$CurrentAccount] Then
 			GUICtrlSetData($lblHeroUpgCost, _NumberFormat($g_iCostDElixirHero[$CurrentAccount], True))
 			$iOldCostDElixirHero[$CurrentAccount] = $g_iCostDElixirHero[$CurrentAccount]
 		EndIf
@@ -304,31 +304,31 @@ Func UpdateStats()
 
 		$iAttackedCountStatic = 0
 	For $i = 0 To $iModeCount
-		If $iOldAttackedVillageCount[$CurrentAccount][$i] <> $g_iAttackedVillageCount[$CurrentAccount][$i] Then
+		If $bForceUpdateAll = True Or $iOldAttackedVillageCount[$CurrentAccount][$i] <> $g_iAttackedVillageCount[$CurrentAccount][$i] Then
 			GUICtrlSetData($lblAttacked[$i], _NumberFormat($g_iAttackedVillageCount[$CurrentAccount][$i], True))
 			$iOldAttackedVillageCount[$CurrentAccount][$i] = $g_iAttackedVillageCount[$CurrentAccount][$i]
 		EndIf
 		$iAttackedCountStatic += $g_iAttackedVillageCount[$CurrentAccount][$i]
-		If $iOldTotalGoldGain[$CurrentAccount][$i] <> $g_iTotalGoldGain[$CurrentAccount][$i] Then
+		If $bForceUpdateAll = True Or $iOldTotalGoldGain[$CurrentAccount][$i] <> $g_iTotalGoldGain[$CurrentAccount][$i] Then
 			GUICtrlSetData($lblTotalGoldGain[$i], _NumberFormat($g_iTotalGoldGain[$CurrentAccount][$i], True))
 			$iOldTotalGoldGain[$CurrentAccount][$i] = $g_iTotalGoldGain[$CurrentAccount][$i]
 		EndIf
-		If $iOldTotalElixirGain[$CurrentAccount][$i] <> $g_iTotalElixirGain[$CurrentAccount][$i] Then
+		If $bForceUpdateAll = True Or $iOldTotalElixirGain[$CurrentAccount][$i] <> $g_iTotalElixirGain[$CurrentAccount][$i] Then
 			GUICtrlSetData($lblTotalElixirGain[$i], _NumberFormat($g_iTotalElixirGain[$CurrentAccount][$i], True))
 			$iOldTotalElixirGain[$CurrentAccount][$i] = $g_iTotalElixirGain[$CurrentAccount][$i]
 		EndIf
-		If $iOldTotalDarkGain[$CurrentAccount][$i] <> $g_iTotalDarkGain[$CurrentAccount][$i] Then
+		If $bForceUpdateAll = True Or $iOldTotalDarkGain[$CurrentAccount][$i] <> $g_iTotalDarkGain[$CurrentAccount][$i] Then
 			GUICtrlSetData($lblTotalDElixirGain[$i], _NumberFormat($g_iTotalDarkGain[$CurrentAccount][$i], True))
 			$iOldTotalDarkGain[$CurrentAccount][$i] = $g_iTotalDarkGain[$CurrentAccount][$i]
 		EndIf
-		If $iOldTotalTrophyGain[$CurrentAccount][$i] <> $g_iTotalTrophyGain[$CurrentAccount][$i] Then
+		If $bForceUpdateAll = True Or $iOldTotalTrophyGain[$CurrentAccount][$i] <> $g_iTotalTrophyGain[$CurrentAccount][$i] Then
 			GUICtrlSetData($lblTotalTrophyGain[$i], _NumberFormat($g_iTotalTrophyGain[$CurrentAccount][$i], True))
 			$iOldTotalTrophyGain[$CurrentAccount][$i] = $g_iTotalTrophyGain[$CurrentAccount][$i]
 		EndIf
 	Next
 
 	;UPDATED TO MISC STAT TAB
-	If $iOldAttackedCount <> $iAttackedCountStatic Then
+	If $bForceUpdateAll = True Or $iOldAttackedCount <> $iAttackedCountStatic Then
 		GUICtrlSetData($lblresultvillagesattacked, _NumberFormat($iAttackedCountStatic, True))
 		GUICtrlSetData($lblResultAttackedHourNow, _NumberFormat($iAttackedCountStatic, True))
 		$iOldAttackedCount = $iAttackedCountStatic
@@ -337,47 +337,47 @@ Func UpdateStats()
 
 	For $i = 0 To $iModeCount
 		If $i = $TS Then ContinueLoop
-		If $iOldNbrOfDetectedMines[$CurrentAccount][$i] <> $g_iNbrOfDetectedMines[$CurrentAccount][$i] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfDetectedMines[$CurrentAccount][$i] <> $g_iNbrOfDetectedMines[$CurrentAccount][$i] Then
 			GUICtrlSetData($lblNbrOfDetectedMines[$i], $g_iNbrOfDetectedMines[$CurrentAccount][$i])
 			$iOldNbrOfDetectedMines[$CurrentAccount][$i] = $g_iNbrOfDetectedMines[$CurrentAccount][$i]
 		EndIf
 
-		If $iOldNbrOfDetectedCollectors[$CurrentAccount][$i] <> $g_iNbrOfDetectedCollectors[$CurrentAccount][$i] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfDetectedCollectors[$CurrentAccount][$i] <> $g_iNbrOfDetectedCollectors[$CurrentAccount][$i] Then
 			GUICtrlSetData($lblNbrOfDetectedCollectors[$i], $g_iNbrOfDetectedCollectors[$CurrentAccount][$i])
 			$iOldNbrOfDetectedCollectors[$CurrentAccount][$i] = $g_iNbrOfDetectedCollectors[$CurrentAccount][$i]
 		EndIf
 
-		If $iOldNbrOfDetectedDrills[$CurrentAccount][$i] <> $g_iNbrOfDetectedDrills[$CurrentAccount][$i] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfDetectedDrills[$CurrentAccount][$i] <> $g_iNbrOfDetectedDrills[$CurrentAccount][$i] Then
 			GUICtrlSetData($lblNbrOfDetectedDrills[$i], $g_iNbrOfDetectedDrills[$CurrentAccount][$i])
 			$iOldNbrOfDetectedDrills[$CurrentAccount][$i] = $g_iNbrOfDetectedDrills[$CurrentAccount][$i]
 		EndIf
 	Next
 
-		If $iOldNbrOfTHSnipeFails[$CurrentAccount] <> $g_iNbrOfTHSnipeFails[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfTHSnipeFails[$CurrentAccount] <> $g_iNbrOfTHSnipeFails[$CurrentAccount] Then
 			GUICtrlSetData($lblNbrOfTSFailed, $g_iNbrOfTHSnipeFails[$CurrentAccount])
 			$iOldNbrOfTHSnipeFails[$CurrentAccount] = $g_iNbrOfTHSnipeFails[$CurrentAccount]
 		EndIf
 
-		If $iOldNbrOfTHSnipeSuccess[$CurrentAccount] <> $g_iNbrOfTHSnipeSuccess[$CurrentAccount] Then
+		If $bForceUpdateAll = True Or $iOldNbrOfTHSnipeSuccess[$CurrentAccount] <> $g_iNbrOfTHSnipeSuccess[$CurrentAccount] Then
 			GUICtrlSetData($lblNbrOfTSSuccess, $g_iNbrOfTHSnipeSuccess[$CurrentAccount])
 			$iOldNbrOfTHSnipeSuccess[$CurrentAccount] = $g_iNbrOfTHSnipeSuccess[$CurrentAccount]
 		EndIf
 
 	;SECTION SMART ZAP
 		;smartzap Gain
-		If $iOldSmartZapGain <> $iSmartZapGain Then
+		If $bForceUpdateAll = True Or $iOldSmartZapGain <> $iSmartZapGain Then
 			GUICtrlSetData($lblSmartZapGain, _NumberFormat($iSmartZapGain, True))
 			$iOldSmartZapGain = $iSmartZapGain
 		EndIf
 
 		; SmartZap Spells Used
-		If $iOldNumLSpellsUsed <> $iNumLSpellsUsed Then
+		If $bForceUpdateAll = True Or $iOldNumLSpellsUsed <> $iNumLSpellsUsed Then
 			GUICtrlSetData($lblLightningUsed, _NumberFormat($iNumLSpellsUsed, True))
 			$iOldNumLSpellsUsed = $iNumLSpellsUsed
 		EndIf
 
 		; EarthQuake Spells Used
-		If $iOldNumEQSpellsUsed <> $iNumEQSpellsUsed Then
+		If $bForceUpdateAll = True Or $iOldNumEQSpellsUsed <> $iNumEQSpellsUsed Then
 			GUICtrlSetData($lblEarthQuakeUsed, _NumberFormat($iNumEQSpellsUsed, True))
 			$iOldNumEQSpellsUsed = $iNumEQSpellsUsed
 		EndIf
@@ -387,33 +387,33 @@ Func UpdateStats()
 
 ;STATS UPDATE BOTTOM BAR
 
-	If $iOldFreeBuilderCount[$CurrentAccount] <> $g_iFreeBuilderCount[$CurrentAccount] Or $iOldTotalBuilderCount[$CurrentAccount] <> $g_iTotalBuilderCount[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldFreeBuilderCount[$CurrentAccount] <> $g_iFreeBuilderCount[$CurrentAccount] Or $iOldTotalBuilderCount[$CurrentAccount] <> $g_iTotalBuilderCount[$CurrentAccount] Then
 		GUICtrlSetData($lblResultBuilderNow, $g_iFreeBuilderCount[$CurrentAccount] & "/" & $g_iTotalBuilderCount[$CurrentAccount])
 		$iOldFreeBuilderCount[$CurrentAccount] = $g_iFreeBuilderCount[$CurrentAccount]
 		$iOldTotalBuilderCount[$CurrentAccount] = $g_iTotalBuilderCount[$CurrentAccount]
 	EndIf
 
-	If $iOldGemAmount[$CurrentAccount] <> $g_iGemAmount[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOldGemAmount[$CurrentAccount] <> $g_iGemAmount[$CurrentAccount] Then
 		GUICtrlSetData($lblResultGemNow, _NumberFormat($g_iGemAmount[$CurrentAccount], True))
 		$iOldGemAmount[$CurrentAccount] = $g_iGemAmount[$CurrentAccount]
 	EndIf
 
-	If $iOLDGoldCurrentStatic[$CurrentAccount] <> $g_iGoldCurrent[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOLDGoldCurrentStatic[$CurrentAccount] <> $g_iGoldCurrent[$CurrentAccount] Then
 		GUICtrlSetData($lblResultGoldNow, _NumberFormat($g_iGoldCurrent[$CurrentAccount], True))
 		$iOLDGoldCurrentStatic[$CurrentAccount] = $g_iGoldCurrent[$CurrentAccount]
 	EndIf
 
-	If $iOLDElixirCurrentStatic[$CurrentAccount] <> $g_iElixirCurrent[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOLDElixirCurrentStatic[$CurrentAccount] <> $g_iElixirCurrent[$CurrentAccount] Then
 		GUICtrlSetData($lblResultElixirNow, _NumberFormat($g_iElixirCurrent[$CurrentAccount], True))
 		$iOLDElixirCurrentStatic[$CurrentAccount] = $g_iElixirCurrent[$CurrentAccount]
 	EndIf
 
-	If $iOLDDarkCurrentStatic[$CurrentAccount] <> $g_iDarkCurrent[$CurrentAccount] And $g_iDarkStart[$CurrentAccount] <> "" Then
+	If $bForceUpdateAll = True Or $iOLDDarkCurrentStatic[$CurrentAccount] <> $g_iDarkCurrent[$CurrentAccount] And $g_iDarkStart[$CurrentAccount] <> "" Then
 		GUICtrlSetData($lblResultDeNow, _NumberFormat($g_iDarkCurrent[$CurrentAccount], True))
 		$iOLDDarkCurrentStatic[$CurrentAccount] = $g_iDarkCurrent[$CurrentAccount]
 	EndIf
 
-	If $iOLDTrophyCurrentStatic[$CurrentAccount] <> $g_iTrophyCurrent[$CurrentAccount] Then
+	If $bForceUpdateAll = True Or $iOLDTrophyCurrentStatic[$CurrentAccount] <> $g_iTrophyCurrent[$CurrentAccount] Then
 		GUICtrlSetData($lblResultTrophyNow, _NumberFormat($g_iTrophyCurrent[$CurrentAccount], True))
 		$iOLDTrophyCurrentStatic[$CurrentAccount] = $g_iTrophyCurrent[$CurrentAccount]
 	EndIf
@@ -435,7 +435,8 @@ Func UpdateStats()
 		$ResetStats = 0
 	EndIf
 
-UpdateStatsSwitchMode()
+UpdateStatsSwitchMode($bForceUpdateAll)
+
 EndFunc   ;==>UpdateStats
 
 Func ResetStats()
