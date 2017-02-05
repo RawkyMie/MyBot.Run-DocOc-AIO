@@ -13,14 +13,14 @@
 ; Link ..........: https://www.mybot.run
 ; Example .......:  =====================================================================================================================
 
-Func SwitchAccount($Init = False, $ConfirmSync = False)
+Func SwitchAccount($Init = False)
 	Local Static $iRetry = 0
 
 	If $ichkSwitchAccount = 1 And $g_bSwitchAcctPrereq Then
 		If $Init Then $FirstInit = False
 		
 	;======Get Lab Status - Green = lab running=======
-		If Not $Init And Not $ConfirmSync And Labstatus() Then
+		If Not $Init And Labstatus() Then
 			GUICtrlSetBkColor($g_lblLabStatus[$CurrentAccount], $COLOR_GREEN)
 			GUICtrlSetBkColor($g_lblLabStatusPO[$CurrentAccount], $COLOR_GREEN)
 		Else
@@ -29,19 +29,13 @@ Func SwitchAccount($Init = False, $ConfirmSync = False)
 		EndIf
 	; Get King Queen Warden Status
 ;		If Not $Init Then HeroStatsStaus() ; Updated in GetArmyHeroStatus(), No Need to update here also.
-
+	
 		checkMainScreen()
 		Setlog("Starting SmartSwitchAccount...", $COLOR_SUCCESS)
-		If Not $ConfirmSync Then MakeSummaryLog()
+		MakeSummaryLog()
 
-		If Not $Init And Not $ConfirmSync And $ichkDonateAccount[$CurrentAccount] = 0 Then GetWaitTime() ; gets wait time for current account
-		
-		If $ConfirmSync = True Then
-			SetLog("ReSync of SmartSwitchAccount...", $COLOR_INFO)
-			$NextAccount = $CurrentAccount
-			GetYCoordinates($NextAccount)
-			
-		ElseIf $Init Then
+		If Not $Init And $ichkDonateAccount[$CurrentAccount] = 0 Then GetWaitTime() ; gets wait time for current account
+		If $Init Then
 			SetLog("Initialization of SmartSwitchAccount...", $COLOR_INFO)
 			$CurrentAccount = 1
 			$FirstLoop = 2 ; Don't Ask.. It Just Works...
@@ -82,23 +76,23 @@ Func SwitchAccount($Init = False, $ConfirmSync = False)
 			GUICtrlSetData($g_lblTimeNowSW[$CurrentAccount], "Looting" )
 			GUICtrlSetBkColor($g_lblTimeNowSW[$CurrentAccount], $COLOR_GREEN)
 			GUICtrlSetColor($g_lblTimeNowSW[$CurrentAccount], $COLOR_BLACK)
-			
+
 			GUICtrlSetData($g_lblTimeNowPO[$CurrentAccount], "Looting" )
 			GUICtrlSetBkColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_GREEN)
 			GUICtrlSetColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_BLACK)
 		EndIf
-		
+
 		If _Sleep($iDelayRespond) Then Return
-			
+
 		If $NextAccount = $CurrentAccount And Not $Init And $FirstLoop >= $TotalAccountsInUse Then
 			SetLog("Next Account is already the account we are on, no need to change...", $COLOR_SUCCESS)
 		Else
-				If Not $Init And Not $ConfirmSync And $ichkDonateAccount[$CurrentAccount] = 0 Then
+				If Not $Init And $ichkDonateAccount[$CurrentAccount] = 0 Then
 					SetLog("Trying to Request Troops before switching...", $COLOR_INFO)
 					RequestCC()
 					If _Sleep(500) Then Return
 				EndIf
-				
+
 				Switch SWProcess()
 					Case 4 To 6 ;Three Attempts then Restart Emulator
 						$iRetry +=1
@@ -113,14 +107,13 @@ Func SwitchAccount($Init = False, $ConfirmSync = False)
 							checkMainScreen()
 							runBot()
 						EndIf
-						If $Init Then 
+						If $Init Then
 							SwitchAccount(True)
 						Else
-							SwitchAccount()	
+							SwitchAccount()
 						EndIf
-							
-					Case 3
 
+					Case 3
 					;More Serious Problem - Just restart No Retry's
 					;Switch account reset first start condition
 						$Init = False
@@ -141,42 +134,42 @@ Func SwitchAccount($Init = False, $ConfirmSync = False)
 						GUICtrlSetData($g_lblTimeNowSW[$CurrentAccount], "Donate" )
 						GUICtrlSetBkColor($g_lblTimeNowSW[$CurrentAccount], $COLOR_YELLOW)
 						GUICtrlSetColor($g_lblTimeNowSW[$CurrentAccount], $COLOR_BLACK)
-						
+
 						GUICtrlSetData($g_lblTimeNowPO[$CurrentAccount], "Donate" )
 						GUICtrlSetBkColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_YELLOW)
-						GUICtrlSetColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_BLACK)						
+						GUICtrlSetColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_BLACK)
 					Else
 						GUICtrlSetData($g_lblTimeNowSW[$CurrentAccount], Round($CurrentAccountWaitTime, 2) )
 						GUICtrlSetBkColor($g_lblTimeNowSW[$CurrentAccount], $COLOR_YELLOW)
 						GUICtrlSetColor($g_lblTimeNowSW[$CurrentAccount], $COLOR_BLACK)
-						
+
 						GUICtrlSetData($g_lblTimeNowPO[$CurrentAccount], Round($CurrentAccountWaitTime, 2) )
 						GUICtrlSetBkColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_YELLOW)
-						GUICtrlSetColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_BLACK)						
+						GUICtrlSetColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_BLACK)
 					EndIf
 
 					If $ichkDonateAccount[$NextAccount] = 1 Then ; Set Gui Label for Donate or Looting CurrentAccount BackGround Color Green
 						GUICtrlSetData($g_lblTimeNowSW[$NextAccount], "Donating" )
 						GUICtrlSetBkColor($g_lblTimeNowSW[$NextAccount], $COLOR_GREEN)
 						GUICtrlSetColor($g_lblTimeNowSW[$NextAccount], $COLOR_BLACK)
-						
+
 						GUICtrlSetData($g_lblTimeNowPO[$NextAccount], "Donating" )
 						GUICtrlSetBkColor($g_lblTimeNowPO[$NextAccount], $COLOR_GREEN)
-						GUICtrlSetColor($g_lblTimeNowPO[$NextAccount], $COLOR_BLACK)						
+						GUICtrlSetColor($g_lblTimeNowPO[$NextAccount], $COLOR_BLACK)
 					Else
 						GUICtrlSetData($g_lblTimeNowSW[$NextAccount], "Looting" )
 						GUICtrlSetBkColor($g_lblTimeNowSW[$NextAccount], $COLOR_GREEN)
 						GUICtrlSetColor($g_lblTimeNowSW[$NextAccount], $COLOR_BLACK)
-						
+
 						GUICtrlSetData($g_lblTimeNowPO[$NextAccount], "Looting" )
 						GUICtrlSetBkColor($g_lblTimeNowPO[$NextAccount], $COLOR_GREEN)
-						GUICtrlSetColor($g_lblTimeNowPO[$NextAccount], $COLOR_BLACK)						
+						GUICtrlSetColor($g_lblTimeNowPO[$NextAccount], $COLOR_BLACK)
 					EndIf
 				EndIf
 		;===================================================
 
 				$CurrentAccount = $NextAccount
-				If $Init Or $ConfirmSync Then
+				If $Init Then
 					$NextProfile = _GUICtrlComboBox_GetCurSel($cmbAccount[$CurrentAccount])
 					_GUICtrlComboBox_SetCurSel($cmbProfile, $NextProfile)
 					cmbProfile()
@@ -188,7 +181,8 @@ Func SwitchAccount($Init = False, $ConfirmSync = False)
 				If _Sleep($iDelayRespond) Then Return
 				IdentifyDonateOnly()
 				waitMainScreen()
-				VillageReport(False, False, True)
+				VillageReport()
+				UpdateStats()
 				CheckArmyCamp(True, True) ; Update troops first after switch
 
 				If _Sleep(500) Then Return
@@ -197,6 +191,7 @@ Func SwitchAccount($Init = False, $ConfirmSync = False)
 				Else
 					runBot()
 				EndIf
+
 		EndIf
 	Else ;ok
 		$FirstInit = False
@@ -208,32 +203,32 @@ EndFunc   ;==>SwitchAccount
 Func SWProcess()
 ; return 1 switch account Worked.
 ; return 2 Already on the right account...
-; Errors 
+; Errors
 ; Return 3 Unknow error restart needed
 ; return 4 Settings Page did not open
 ; return 5 Account List Not Found
 ; Return 6 Confirm button did not appear
 		;============Start the Switch Process, Click setting===============
-				Click(820, 590, 1, 0, "Click Setting") 
+				Click(820, 590, 1, 0, "Click Setting")
 				If _Sleep(100) Then Return ; Some Delays to slow down the clicks
 		;====================================================================
-				
+
 		;==========Wait for red x - then preform DoubleClick======================
 				$iCount = 0 ; Sleep(5000) if needed.
 				While Not _ColorCheck(_GetPixelColor(766, 101, True), Hex(0xF88088, 6), 20)
 					If _Sleep(100) Then Return
 					$iCount += 1
-					If $iCount = 50 Then 
+					If $iCount = 50 Then
 						Setlog("Settings Page did not open" )
 						Return 4 ; Settings Page did not open
 					EndIf
-					
+
 				WEnd
 				If _Sleep(100) Then Return ; Some Delays to slow down the click
-				;The Double Click check for either green or red then click twice 
-				If _ColorCheck(_GetPixelColor(408, 408, True), "D0E878", 20) Then 
+				;The Double Click check for either green or red then click twice
+				If _ColorCheck(_GetPixelColor(408, 408, True), "D0E878", 20) Then
 					Click(440, 420, 2, 750, "Click Connect Twice with long pause")
-				ElseIf _ColorCheck(_GetPixelColor(408, 408, True), "F07078", 20) Then 
+				ElseIf _ColorCheck(_GetPixelColor(408, 408, True), "F07078", 20) Then
 					Click(440, 420, 1, 750, "Click Connect Once with long pause")
 				EndIf
 				If _Sleep(100) Then Return ; Some Delays to slow down the clicks
@@ -247,7 +242,7 @@ Func SWProcess()
 					If $iCount = 100 Then ExitLoop
 				WEnd
 				;ClickP($aAway, 1, 0, "#0167") ;Click Away - disable Google Play animation
-				If $iCount < 100 Then 
+				If $iCount < 100 Then
 					ClickP($aAway, 1, 0, "#0167") ;Click Away - disable Google Play animation
 				EndIf
 				If _Sleep(100) Then Return ; Some Delays to slow down the clicks
@@ -259,7 +254,7 @@ Func SWProcess()
 				While Not _ColorCheck(_GetPixelColor(165, 330, True), Hex(0xFFFFFF, 6), 20)
 					If _Sleep(100) Then Return
 					$iCount += 1
-					If $iCount = 100 Then 
+					If $iCount = 100 Then
 						Setlog("Account List Not Found")
 						Return 5
 					EndIf
@@ -276,7 +271,7 @@ Func SWProcess()
 		;=====Do Based off of next step result ====
 				If $NextStep = 1 Then ; All Was Good.. click load, type confirm, click confirm
 					Setlog("Load button appeared", $COLOR_SUCCESS)
-					
+
 					If _Sleep(100) Then Return ; Some Delays to slow down the clicks
 					Click(520, 430)
 					If _Sleep(100) Then Return ; Some Delays to slow down the clicks

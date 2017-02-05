@@ -13,11 +13,11 @@
 ; Example .......:
 ; ===============================================================================================================================
 
-Func UpdateStatsSwitchMode($bForceUpdateAll = False) ; UPDATES THE TAB MULTI STATS
+Func UpdateStatsSwitchMode() ; UPDATES THE TAB MULTI STATS
 	Local Static $g_iOLDGoldNowSW[9], $g_iOLDElixirNowSW[9], $g_iOLDDarkNowSW[9], $g_iOLDGemNowSW[9]
 	Local Static $g_iOLDFreeBuilders[9], $g_sProfileName[9]
 
-	If $bForceUpdateAll = True Or $g_sProfileName[$CurrentAccount] <> $sCurrProfile Or $CurrentAccount = 0 Then
+	If $g_sProfileName[$CurrentAccount] <> $sCurrProfile Or $CurrentAccount = 0 Then
 		$g_sProfileName[$CurrentAccount] = $sCurrProfile
 		GUICtrlSetData($g_grpVillageSW[$CurrentAccount], GetTranslated(603, 32, "Village") & ": " & $g_sProfileName[$CurrentAccount])
 		If WinGetState(Eval($hGuiPopOut & $CurrentAccount)) <> -1 Then
@@ -40,21 +40,21 @@ Func UpdateStatsSwitchMode($bForceUpdateAll = False) ; UPDATES THE TAB MULTI STA
 	Next
 
 ; Update Stats TAB MULTI Just for Current Account, only the ones that have changed >> Faster
-		If $bForceUpdateAll = True Or $g_iGoldCurrent[$CurrentAccount] <> $g_iOLDGoldNowSW[$CurrentAccount] Or $g_iGoldCurrent[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
+		If $g_iGoldCurrent[$CurrentAccount] <> $g_iOLDGoldNowSW[$CurrentAccount] Or $g_iGoldCurrent[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
 			GUICtrlSetData($g_lblGoldNowSW[$CurrentAccount], _NumberFormat($g_iGoldCurrent[$CurrentAccount]))
 			GUICtrlSetData($g_lblGoldNowPO[$CurrentAccount], _NumberFormat($g_iGoldCurrent[$CurrentAccount]))
 
 			$g_iOLDGoldNowSW[$CurrentAccount] = $g_iGoldCurrent[$CurrentAccount]
 		EndIf
 
-		If $bForceUpdateAll = True Or $g_iElixirCurrent[$CurrentAccount] <> $g_iOLDElixirNowSW[$CurrentAccount] Or $g_iElixirCurrent[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
+		If $g_iElixirCurrent[$CurrentAccount] <> $g_iOLDElixirNowSW[$CurrentAccount] Or $g_iElixirCurrent[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
 			GUICtrlSetData($g_lblElixirNowSW[$CurrentAccount], _NumberFormat($g_iElixirCurrent[$CurrentAccount]))
 			GUICtrlSetData($g_lblElixirNowPO[$CurrentAccount], _NumberFormat($g_iElixirCurrent[$CurrentAccount]))
 
 			$g_iOLDElixirNowSW[$CurrentAccount] = $g_iElixirCurrent[$CurrentAccount]
 		EndIf
 
-		If $bForceUpdateAll = True Or $g_iDarkCurrent[$CurrentAccount] <> $g_iOLDDarkNowSW[$CurrentAccount] Or $g_iDarkCurrent[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
+		If $g_iDarkCurrent[$CurrentAccount] <> $g_iOLDDarkNowSW[$CurrentAccount] Or $g_iDarkCurrent[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
 			If $g_iDarkStart[$CurrentAccount] <> "" Then
 				GUICtrlSetData($g_lblDarkNowSW[$CurrentAccount], _NumberFormat($g_iDarkCurrent[$CurrentAccount]))
 				GUICtrlSetData($g_lblDarkNowPO[$CurrentAccount], _NumberFormat($g_iDarkCurrent[$CurrentAccount]))
@@ -63,14 +63,14 @@ Func UpdateStatsSwitchMode($bForceUpdateAll = False) ; UPDATES THE TAB MULTI STA
 			EndIf
 		EndIf
 
-		If $bForceUpdateAll = True Or $g_iGemAmount[$CurrentAccount] <> $g_iOLDGemNowSW[$CurrentAccount] Or $g_iGemAmount[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
+		If $g_iGemAmount[$CurrentAccount] <> $g_iOLDGemNowSW[$CurrentAccount] Or $g_iGemAmount[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
 			GUICtrlSetData($g_lblGemNowSW[$CurrentAccount], $g_iGemAmount[$CurrentAccount] )
 			GUICtrlSetData($g_lblGemNowPO[$CurrentAccount], $g_iGemAmount[$CurrentAccount] )
 
 			$g_iOLDGemNowSW[$CurrentAccount] = $g_iGemAmount[$CurrentAccount]
 		EndIf
 
-		If $bForceUpdateAll = True Or $g_iFreeBuilderCount[$CurrentAccount] <> $g_iOLDFreeBuilders[$CurrentAccount] Or $g_iFreeBuilderCount[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
+		If $g_iFreeBuilderCount[$CurrentAccount] <> $g_iOLDFreeBuilders[$CurrentAccount] Or $g_iFreeBuilderCount[$CurrentAccount] = "" Or $CurrentAccount = 0 Then
 			GUICtrlSetData($g_lblBuilderNowSW[$CurrentAccount], $g_iFreeBuilderCount[$CurrentAccount] & "/" & $g_iTotalBuilderCount[$CurrentAccount])
 			GUICtrlSetData($g_lblBuilderNowPO[$CurrentAccount], $g_iFreeBuilderCount[$CurrentAccount] & "/" & $g_iTotalBuilderCount[$CurrentAccount])
 
