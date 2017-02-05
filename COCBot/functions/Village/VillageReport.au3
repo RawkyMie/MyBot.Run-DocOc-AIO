@@ -14,7 +14,7 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
-Func VillageReport($bBypass = False, $bSuppressLog = False)
+Func VillageReport($bBypass = False, $bSuppressLog = False, $bForceUpdateAll = False)
 	PureClickP($aAway, 1, 0, "#0319") ;Click Away
 	If _Sleep($iDelayVillageReport1) Then Return
 
@@ -33,13 +33,11 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 	$g_iTrophyCurrent[$CurrentAccount] = getTrophyMainScreen($aTrophies[0], $aTrophies[1])
 	If Not $bSuppressLog Then Setlog(" [T]: " & _NumberFormat($g_iTrophyCurrent[$CurrentAccount]), $COLOR_SUCCESS)
 
-	If _ColorCheck(_GetPixelColor(830, 150, True), Hex(0x000100, 6), 15) Then ; check if the village have a Dark Elixir Storage
+	If _ColorCheck(_GetPixelColor(837, 134, True), Hex(0x302030, 6), 15) Then ; check if the village have a Dark Elixir Storage
 		$g_iGoldCurrent[$CurrentAccount] = getResourcesMainScreen(696, 23)
 		$g_iElixirCurrent[$CurrentAccount] = getResourcesMainScreen(696, 74)
 		$g_iDarkCurrent[$CurrentAccount] =  getResourcesMainScreen(728, 123)
 		$g_iGemAmount[$CurrentAccount] = getResourcesMainScreen(740, 171)
-		
-
 		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($g_iGoldCurrent[$CurrentAccount]) & " [E]: " & _NumberFormat($g_iElixirCurrent[$CurrentAccount]) & " [D]: " & _NumberFormat($g_iDarkCurrent[$CurrentAccount]) & " [GEM]: " & _NumberFormat($g_iGemAmount[$CurrentAccount]), $COLOR_SUCCESS)
 
 	Else
@@ -49,8 +47,9 @@ Func VillageReport($bBypass = False, $bSuppressLog = False)
 		If Not $bSuppressLog Then SetLog(" [G]: " & _NumberFormat($g_iGoldCurrent[$CurrentAccount]) & " [E]: " & _NumberFormat($g_iElixirCurrent[$CurrentAccount]) & " [GEM]: " & _NumberFormat($g_iGemAmount[$CurrentAccount]), $COLOR_SUCCESS)
 
 	EndIf
+
 	If $bBypass = False Then ; update stats
-		UpdateStats()
+		UpdateStats($bForceUpdateAll)
 	EndIf
 
 	Local $i = 0
