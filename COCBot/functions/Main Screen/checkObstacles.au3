@@ -210,10 +210,18 @@ Func _checkObstacles() ;Checks if something is in the way for mainscreen
 	EndIf
 	If Not $bHasTopBlackBar And _CheckPixel($aIsMainGrayed, $bNoCapturePixel) Then
 		SetDebugLog("checkObstacles: Found gray Window to close")
-		PureClickP($aAway, 1, 0, "#0133") ;Click away If things are open
-		$MinorObstacle = True
-		If _Sleep($iDelaycheckObstacles1) Then Return
-		Return False
+		If _ColorCheck(_GetPixelColor(290, 450), Hex(0xCA3A17, 6), 20) Then ;Checks for a Cancel button
+			SetDebugLog("checkObstacles: Found Load Village With Cancel button")
+			PureClick(290,450, 1, 0, "#0134") ;Clicks Cancel
+			$MinorObstacle = True
+			If _Sleep($iDelaycheckObstacles1) Then Return
+			Return False
+		Else
+			PureClickP($aAway, 1, 0, "#0133") ;Click away If things are open
+			$MinorObstacle = True
+			If _Sleep($iDelaycheckObstacles1) Then Return
+			Return False
+		EndIf
 	EndIf
 	If _ColorCheck(_GetPixelColor(792, 39), Hex(0xDC0408, 6), 20) Then
 		SetDebugLog("checkObstacles: Found Window with Close Button to close")
