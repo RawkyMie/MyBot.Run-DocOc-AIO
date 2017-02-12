@@ -34,8 +34,22 @@ Func CheckPrerequisites($bSilent = False)
 	If $isAllOK = False And Not $bSilent Then
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
 	EndIf
+	
+	If IsNetFramework452Installed() Then
+		$g_bSwitchAcctPrereq = True
+	Else
+		$g_bSwitchAcctPrereq = False
+	EndIf
 	Return $isAllOK
 EndFunc   ;==>CheckPrerequisites
+
+Func IsNetFramework452Installed()
+	;https://msdn.microsoft.com/it-it/library/hh925568%28v=vs.110%29.aspx#net_b
+	Local $sKeyValue, $success = False
+	$sKeyValue = RegRead("HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\", "Release")
+	If Number($sKeyValue) >= 379893 Then $success = True
+	Return $success
+EndFunc   ;==>isNetFramework4dot5Installed
 
 Func isNetFramework4Installed()
 	Local $z = 0, $sKeyName, $success = False

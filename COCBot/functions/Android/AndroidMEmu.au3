@@ -1,3 +1,5 @@
+;MODded by DocOc++ Team AIO
+
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: OpenMEmu
 ; Description ...: Opens new MEmu instance
@@ -412,7 +414,9 @@ EndFunc
 Func UxSmsService()
 
 	Local $CMD ='net stop UxSms && ' & _
-				'net start UxSms'
+				'net start UxSms && ' & _
+				'ipconfig /flushdns' ;& _
+;				'pause'
 
 	; Use to run the command following && only if the
 	; command preceding the symbol is successful.

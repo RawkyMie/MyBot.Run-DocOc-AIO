@@ -112,6 +112,10 @@ Func BotStart()
 EndFunc   ;==>BotStart
 
 Func BotStop()
+	;Switch account reset first start condition
+	$Init = False
+	$FirstInit = True
+
 	ResumeAndroid()
 
 	$RunState = False
@@ -170,7 +174,7 @@ Func BotSearchMode()
 	btnStart()
 	checkMainScreen(False)
 	If _Sleep(100) Then Return
-	$iTrophyCurrent = getTrophyMainScreen($aTrophies[0], $aTrophies[1]) ; get OCR to read current Village Trophies
+	$g_iTrophyCurrent[$CurrentAccount] = getTrophyMainScreen($aTrophies[0], $aTrophies[1]) ; get OCR to read current Village Trophies
 	If _Sleep(100) Then Return
 	CheckArmySpellCastel()
 	ClickP($aAway, 2, 0, "") ;Click Away

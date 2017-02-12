@@ -131,6 +131,8 @@ $grpVillage = GUICtrlCreateGroup(GetTranslated(603,32, "Village"), $x - 20, $y -
 	$x += 75
 	;trophy / runtime
 	$lblResultTrophyNow = GUICtrlCreateLabel("", $x, $y + 2, 55, 15, $SS_RIGHT)
+	$g_icnPopOutSW[0] 		= GUICtrlCreateIcon($pIconLib, $eIcnMove, $x + 60,  $y - 12, 12, 12)
+		GUICtrlSetOnEvent($g_icnPopOutSW[0],"PopOut0")
 	$picResultTrophyNow = GUICtrlCreateIcon ($pIconLib, $eIcnTrophy, $x + 59, $y , 16, 16)
 	$lblResultRuntimeNow = GUICtrlCreateLabel("00:00:00", $x, $y + 2, 50, 15, $SS_RIGHT)
 	GUICtrlSetState(-1, $GUI_HIDE)

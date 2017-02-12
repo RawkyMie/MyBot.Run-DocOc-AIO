@@ -19,20 +19,20 @@ Func StartGainCost()
 	$TempGainCost[2] = 0
 	VillageReport(True, True)
 	Local $tempCounter = 0
-	While ($iGoldCurrent = "" Or $iElixirCurrent = "" Or ($iDarkCurrent = "" And $iDarkStart <> "")) And $tempCounter < 5
+	While ($g_iGoldCurrent[$CurrentAccount] = "" Or $g_iElixirCurrent[$CurrentAccount] = "" Or ($g_iDarkCurrent[$CurrentAccount] = "" And $g_iDarkStart[$CurrentAccount] <> "")) And $tempCounter < 5
 		$tempCounter += 1
 		If _Sleep(100) Then Return
 		VillageReport(True, True)
 	WEnd
-	$TempGainCost[0] = $iGoldCurrent ;$tempGold
-	$TempGainCost[1] = $iElixirCurrent ;$tempElixir
-	$TempGainCost[2] = $iDarkCurrent ;$tempDElixir
+	$TempGainCost[0] = $g_iGoldCurrent[$CurrentAccount] ;$tempGold
+	$TempGainCost[1] = $g_iElixirCurrent[$CurrentAccount] ;$tempElixir
+	$TempGainCost[2] = $g_iDarkCurrent[$CurrentAccount] ;$tempDElixir
 EndFunc   ;==>StartGainCost
 
 Func EndGainCost($Type)
 	VillageReport(True, True)
 	$tempCounter = 0
-	While ($iGoldCurrent = "" Or $iElixirCurrent = "" Or ($iDarkCurrent = "" And $iDarkStart <> "")) And $tempCounter < 5
+	While ($g_iGoldCurrent[$CurrentAccount] = "" Or $g_iElixirCurrent[$CurrentAccount] = "" Or ($g_iDarkCurrent[$CurrentAccount] = "" And $g_iDarkStart[$CurrentAccount] <> "")) And $tempCounter < 5
 		$tempCounter += 1
 		VillageReport(True, True)
 	WEnd
@@ -42,37 +42,37 @@ Func EndGainCost($Type)
 			Local $tempGoldCollected = 0
 			Local $tempElixirCollected = 0
 			Local $tempDElixirCollected = 0
-			
-			If $TempGainCost[0] <> "" And $iGoldCurrent <> "" And $TempGainCost[0] <> $iGoldCurrent Then
-				$tempGoldCollected = $iGoldCurrent - $TempGainCost[0]
-				$iGoldFromMines += $tempGoldCollected
-				$iGoldTotal += $tempGoldCollected
+
+			If $TempGainCost[0] <> "" And $g_iGoldCurrent[$CurrentAccount] <> "" And $TempGainCost[0] <> $g_iGoldCurrent[$CurrentAccount] Then
+				$tempGoldCollected = $g_iGoldCurrent[$CurrentAccount] - $TempGainCost[0]
+				$g_iGoldFromMines[$CurrentAccount] += $tempGoldCollected
+				$g_iGoldTotal[$CurrentAccount] += $tempGoldCollected
 			EndIf
 
-			If $TempGainCost[1] <> "" And $iElixirCurrent <> "" And $TempGainCost[1] <> $iElixirCurrent Then
-				$tempElixirCollected = $iElixirCurrent - $TempGainCost[1]
-				$iElixirFromCollectors += $tempElixirCollected
-				$iElixirTotal += $tempElixirCollected
+			If $TempGainCost[1] <> "" And $g_iElixirCurrent[$CurrentAccount] <> "" And $TempGainCost[1] <> $g_iElixirCurrent[$CurrentAccount] Then
+				$tempElixirCollected = $g_iElixirCurrent[$CurrentAccount] - $TempGainCost[1]
+				$g_iElixirFromCollectors[$CurrentAccount] += $tempElixirCollected
+				$g_iElixirTotal[$CurrentAccount] += $tempElixirCollected
 			EndIf
 
-			If $TempGainCost[2] <> "" And $iDarkCurrent <> "" And $TempGainCost[2] <> $iDarkCurrent Then
-				$tempDElixirCollected = $iDarkCurrent - $TempGainCost[2]
-				$iDElixirFromDrills += $tempDElixirCollected
-				$iDarkTotal += $tempDElixirCollected
+			If $TempGainCost[2] <> "" And $g_iDarkCurrent[$CurrentAccount] <> "" And $TempGainCost[2] <> $g_iDarkCurrent[$CurrentAccount] Then
+				$tempDElixirCollected = $g_iDarkCurrent[$CurrentAccount] - $TempGainCost[2]
+				$g_iDElixirFromDrills[$CurrentAccount] += $tempDElixirCollected
+				$g_iDarkTotal[$CurrentAccount] += $tempDElixirCollected
 			EndIf
 		Case "Train"
 			Local $tempElixirSpent = 0
 			Local $tempDElixirSpent = 0
-			If $TempGainCost[1] <> "" And $iElixirCurrent <> ""  And $TempGainCost[1] <> $iElixirCurrent Then
-				$tempElixirSpent = ($TempGainCost[1] - $iElixirCurrent)
-				$iTrainCostElixir += $tempElixirSpent
-				$iElixirTotal -= $tempElixirSpent
+			If $TempGainCost[1] <> "" And $g_iElixirCurrent[$CurrentAccount] <> ""  And $TempGainCost[1] <> $g_iElixirCurrent[$CurrentAccount] Then
+				$tempElixirSpent = ($TempGainCost[1] - $g_iElixirCurrent[$CurrentAccount])
+				$g_iTrainCostElixir[$CurrentAccount] += $tempElixirSpent
+				$g_iElixirTotal[$CurrentAccount] -= $tempElixirSpent
 			EndIf
 
-			If $TempGainCost[2] <> "" And $iDarkCurrent <> ""  And $TempGainCost[2] <> $iDarkCurrent Then
-				$tempDElixirSpent = ($TempGainCost[2] - $iDarkCurrent)
-				$iTrainCostDElixir += $tempDElixirSpent
-				$iDarkTotal -= $tempDElixirSpent
+			If $TempGainCost[2] <> "" And $g_iDarkCurrent[$CurrentAccount] <> ""  And $TempGainCost[2] <> $g_iDarkCurrent[$CurrentAccount] Then
+				$tempDElixirSpent = ($TempGainCost[2] - $g_iDarkCurrent[$CurrentAccount])
+				$g_iTrainCostDElixir[$CurrentAccount] += $tempDElixirSpent
+				$g_iDarkTotal[$CurrentAccount] -= $tempDElixirSpent
 			EndIf
 	EndSwitch
 

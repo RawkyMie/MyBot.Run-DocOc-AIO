@@ -19,6 +19,8 @@ Func cmbProfile()
 
 	FileClose($hLogFileHandle)
 	FileClose($hAttackLogFileHandle)
+	$hLogFileHandle = ""		; Need to Null the Handles So Next Account is Asigned and Log Files Opened.
+	$hAttackLogFileHandle = ""
 
 	; Setup the profile in case it doesn't exist.
 	setupProfile()

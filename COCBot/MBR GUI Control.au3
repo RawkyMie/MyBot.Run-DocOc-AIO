@@ -60,7 +60,7 @@ Global $aTabControlsStrategies = [$hGUI_STRATEGIES_TAB, $hGUI_STRATEGIES_TAB_ITE
 
 Global $aTabControlsMod = [$hGUI_MOD_TAB, $hGUI_MOD_TAB_ITEM1, $hGUI_MOD_TAB_ITEM2, $hGUI_MOD_TAB_ITEM3, $hGUI_MOD_TAB_ITEM4]
 
-Global $aTabControlsBot = [$hGUI_BOT_TAB, $hGUI_BOT_TAB_ITEM1, $hGUI_BOT_TAB_ITEM2, $hGUI_BOT_TAB_ITEM3, $hGUI_BOT_TAB_ITEM4]
+Global $aTabControlsBot = [$hGUI_BOT_TAB, $hGUI_BOT_TAB_ITEM1, $hGUI_BOT_TAB_ITEM2, $hGUI_BOT_TAB_ITEM3, $hGUI_BOT_TAB_ITEM4, $hGUI_BOT_TAB_ITEM6, $hGUI_BOT_TAB_ITEM5]
 Global $aTabControlsStats = [$hGUI_STATS_TAB, $hGUI_STATS_TAB_ITEM1, $hGUI_STATS_TAB_ITEM2, $hGUI_STATS_TAB_ITEM3]
 
 Global $aAlwaysEnabledControls = [$chkUpdatingWhenMinimized, $chkHideWhenMinimized, $chkDebugClick, $chkDebugSetlog, $chkDebugDisableZoomout, $chkDebugDisableVillageCentering, $chkDebugDeadbaseImage, $chkDebugOcr, $chkDebugImageSave, $chkDebugSmartZap, $chkDebugSX, $chkdebugBuildingPos, $chkdebugTrain, $chkdebugOCRDonate,$btnTestTrain, $btnTestDonateCC, $btnTestRequestCC, $btnTestClickDrag, $btnTestVillageSize, $btnTestDeadBase, $btnTestDeadBaseFolder, $btnTestTHimgloc, $btnTestimglocTroopBar, $chkdebugAttackCSV, $chkmakeIMGCSV, $btnTestAttackCSV, $btnTestFindButton, $txtTestFindButton, $btnTestCleanYard, $lblLightningUsed, $lblSmartZap, $lblEarthQuakeUsed, $btnTestConfigSave, $btnTestConfigRead, $btnTestConfigApply]
@@ -1063,11 +1063,82 @@ Func ControlRedraw($hWin, $ConrolId)
 EndFunc   ;==>ControlRedraw
 
 Func SetTime($bForceUpdate = False)
+	Local Static $DisplayLoop = 0
 	Local $time = _TicksToTime(Int(TimerDiff($sTimer) + $iTimePassed), $hour, $min, $sec)
 	If GUICtrlRead($hGUI_STATS_TAB, 1) = $hGUI_STATS_TAB_ITEM2 Or $bForceUpdate = True Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 	If GUICtrlGetState($lblResultGoldNow) <> $GUI_ENABLE + $GUI_SHOW Or $bForceUpdate = True Then GUICtrlSetData($lblResultRuntimeNow, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-	;If $pEnabled = 1 And $pRemote = 1 And StringFormat("%02i", $sec) = "50" Then NotifyRemoteControl()
-	;If $pEnabled = 1 And $ichkDeleteOldPBPushes = 1 And Mod($min + 1, 30) = 0 And $sec = "0" Then _DeleteOldPushes() ; check every 30 min if must to delete old pushbullet messages, increase delay time for anti ban pushbullet
+
+	If $DisplayLoop >= 10 Then ; Conserve Clock Cycles on Updating times
+		$DisplayLoop = 0
+	;Update Multi Stat Page
+		If GUICtrlRead($hGUI_BOT_TAB, 1) = $hGUI_BOT_TAB_ITEM6 And $CurrentAccount <> 0 Then
+
+			For $i = 1 To 8 ; Update time for all Accounts
+				If $ichkCanUse[$i] = 1 And _
+					$ichkDonateAccount[$i] <> 1 And _
+					$i <> $CurrentAccount And _
+					$TimerDiffStart[$i] <> 0 And _
+					(GUICtrlRead($g_lblTimeNowSW[$i]) <> "No Data" Or GUICtrlRead($g_lblTimeNowSW[$i]) <> "Looting") Then ; Only update labels that need a time
+
+
+						$TimerDiffEnd[$i] = TimerDiff($TimerDiffStart[$i])
+						$AllAccountsWaitTimeDiff[$i] = Round($AllAccountsWaitTime[$i] * 60 * 1000 - $TimerDiffEnd[$i], 2)
+
+						If $AllAccountsWaitTimeDiff[$i] < 0 Then
+							GUICtrlSetData($g_lblTimeNowSW[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
+
+							GUICtrlSetBkColor($g_lblTimeNowSW[$i], $COLOR_RED)
+							GUICtrlSetColor($g_lblTimeNowSW[$i], $COLOR_BLACK)
+						Else
+							GUICtrlSetData($g_lblTimeNowSW[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
+
+							GUICtrlSetBkColor($g_lblTimeNowSW[$i], $COLOR_YELLOW)
+							GUICtrlSetColor($g_lblTimeNowSW[$i], $COLOR_BLACK)
+						EndIf
+
+					GUICtrlSetData($g_lblHrStatsGoldSW[$i], _NumberFormat(Round($g_iGoldTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+					GUICtrlSetData($g_lblHrStatsElixirSW[$i], _NumberFormat(Round($g_iElixirTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+					GUICtrlSetData($g_lblHrStatsDarkSW[$i], _NumberFormat(Round($g_iDarkTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
+				EndIf
+			Next
+		EndIf
+	;Update PopOut's
+		For $i = 1 To 8
+			If WinGetState(Eval($hGuiPopOut & $i)) <> -1 Then
+				If $ichkCanUse[$i] = 1 And _
+					$ichkDonateAccount[$i] <> 1 And _
+					$i <> $CurrentAccount And _
+					$TimerDiffStart[$i] <> 0 And _
+					(GUICtrlRead($g_lblTimeNowPO[$i]) <> "No Data" Or GUICtrlRead($g_lblTimeNowPO[$i]) <> "Looting") Then ; Only update labels that need a time
+
+						$TimerDiffEnd[$i] = TimerDiff($TimerDiffStart[$i])
+						$AllAccountsWaitTimeDiff[$i] = Round($AllAccountsWaitTime[$i] * 60 * 1000 - $TimerDiffEnd[$i], 2)
+						If $AllAccountsWaitTimeDiff[$i] < 0 Then
+							GUICtrlSetData($g_lblTimeNowPO[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
+							GUICtrlSetBkColor($g_lblTimeNowPO[$i], $COLOR_RED)
+							GUICtrlSetColor($g_lblTimeNowPO[$i], $COLOR_BLACK)
+						Else
+							GUICtrlSetData($g_lblTimeNowPO[$i], Round($AllAccountsWaitTimeDiff[$i] / 60 / 1000, 2) )
+							GUICtrlSetBkColor($g_lblTimeNowPO[$i], $COLOR_YELLOW)
+							GUICtrlSetColor($g_lblTimeNowPO[$i], $COLOR_BLACK)
+						EndIf
+
+					GUICtrlSetData($g_lblHrStatsGoldPO[$i], _NumberFormat(Round($g_iGoldTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+					GUICtrlSetData($g_lblHrStatsElixirPO[$i], _NumberFormat(Round($g_iElixirTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+					GUICtrlSetData($g_lblHrStatsDarkPO[$i], _NumberFormat(Round($g_iDarkTotal[$i] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
+				EndIf
+			EndIf
+		Next
+	EndIf
+	If $CurrentAccount = 0 Then
+		GUICtrlSetData($g_lblTimeNowPO[$CurrentAccount], "Looting" )
+		GUICtrlSetBkColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_GREEN)
+		GUICtrlSetColor($g_lblTimeNowPO[$CurrentAccount], $COLOR_BLACK)
+		GUICtrlSetData($g_lblHrStatsGoldPO[$CurrentAccount], _NumberFormat(Round($g_iGoldTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+		GUICtrlSetData($g_lblHrStatsElixirPO[$CurrentAccount], _NumberFormat(Round($g_iElixirTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600)) )
+		GUICtrlSetData($g_lblHrStatsDarkPO[$CurrentAccount], _NumberFormat(Round($g_iDarkTotal[$CurrentAccount] / (Int(TimerDiff($sTimer) + $iTimePassed)) * 3600 * 1000)) )
+	EndIf
+	$DisplayLoop += 1
 EndFunc   ;==>SetTime
 
 Func tabMain()
@@ -1269,22 +1340,28 @@ Func tabBot()
 	$tabidx = GUICtrlRead($hGUI_BOT_TAB)
 	Select
 		Case $tabidx = 0 ; Options tab
+			GUISetState(@SW_HIDE, $hGUI_BOT_TAB_ITEM6)
 			GUISetState(@SW_HIDE, $hGUI_STATS)
 			ControlShow("", "", $cmbLanguage)
-		Case $tabidx = 1 ; Debug tab
+		Case $tabidx = 1 ; Humanization
+			GUISetState(@SW_HIDE, $hGUI_BOT_TAB_ITEM6)
 			GUISetState(@SW_HIDE, $hGUI_STATS)
 			ControlHide("", "", $cmbLanguage)
-		Case $tabidx = 2 ; Profiles tab
+		Case $tabidx = 2 ; Android
+			GUISetState(@SW_HIDE, $hGUI_BOT_TAB_ITEM6)
 			GUISetState(@SW_HIDE, $hGUI_STATS)
 			ControlHide("", "", $cmbLanguage)
-		Case $tabidx = 3 ; Android tab
+		Case $tabidx = 3 ; Debug
+			GUISetState(@SW_HIDE, $hGUI_BOT_TAB_ITEM6)
 			GUISetState(@SW_HIDE, $hGUI_STATS)
 			ControlHide("", "", $cmbLanguage)
-;~		Case $tabidx = 4 ; Android tab
-;~			GUISetState(@SW_HIDE, $hGUI_STATS)
-;~			ControlHide("", "", $cmbLanguage)
-		Case $tabidx = 4 ; Stats tab
+		Case $tabidx = 4 ; Multi Stats tab
+			GUISetState(@SW_HIDE, $hGUI_BOT_TAB_ITEM6)
 			GUISetState(@SW_SHOWNOACTIVATE, $hGUI_STATS)
+			ControlHide("", "", $cmbLanguage)
+		Case $tabidx = 5 ; Multi Stats
+			GUISetState(@SW_HIDE, $hGUI_STATS)
+			GUISetState(@SW_SHOWNOACTIVATE, $hGUI_BOT_TAB_ITEM6)
 			ControlHide("", "", $cmbLanguage)
 	EndSelect
 EndFunc   ;==>tabBot
@@ -1570,7 +1647,7 @@ Func Bind_ImageList($nCtrl)
 
 		Case $hGUI_BOT_TAB
 			; the icons for Bot tab
-			Local $aIconIndex[6] = [$eIcnOptions, $eIcnBrain, $eIcnAndroid, $eIcnProfile, $eIcnGold]
+			Local $aIconIndex[6] = [$eIcnOptions, $eIcnBrain, $eIcnAndroid, $eIcnBug, $eIcnChart, $eIcnMultiChart]
 			; The Android Robot is a Google Trademark and follows Creative Common Attribution 3.0
 
 		Case $hGUI_STRATEGIES_TAB
